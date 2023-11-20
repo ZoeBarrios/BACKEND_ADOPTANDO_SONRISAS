@@ -1,19 +1,13 @@
-import userDTO from "../db/dtos/users/userDTO.js";
-export const getAll = async () => {
-  const users = await User.find({});
-  console.log(users);
-  return users.map((user) => userDTO.fromModel(user));
+import { client } from "../db/db.js";
+export const getAll = async () => {};
+
+export const getByUsername = async (nombre) => {
+  const query = `SELECT * FROM users WHERE name = $1`;
+  const { rows } = await client.query(query, [nombre]);
+  if (rows.length === 0) {
+    return null;
+  }
+  return rows[0];
 };
 
-export const getByUsername = async (username) => {
-  return User.find({ username: username });
-};
-
-export const create = async (createDTO) => {
-  const newUser = new User({
-    ...createDTO,
-    password: await User.encryptPassword(createDTO.password),
-  });
-  await newUser.save();
-  return userDTO.fromModel(newUser);
-};
+export const create = async (createDTO) => {};
