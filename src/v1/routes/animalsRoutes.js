@@ -1,27 +1,28 @@
 import express from "express";
-import { login } from "../../controllers/authController.js";
+import { createAnimal } from "../../controllers/animalsController.js";
 const router = express.Router();
 
 /**
  * @swagger
- * /api/auth/login:
+ * /api/animals:
  *   post:
- *     summary: Login de usuario
- *     tags: [Auth]
- *     description: Login de usuario
+ *     summary: registrar animal
+ *     tags: [Animals]
+ *     description: registrar animal en la base de datos
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
  *               nombre:
  *                 type: string
- *                 description: nombre del usuario
- *               contraseña:
+ *                 description: nombre del animal
+ *               imagen:
  *                 type: string
- *                 description: contraseña del usuario
+ *                 format: binary
+ *                 description: imagen del animal (archivo)
  *     responses:
  *       200:
  *         description: Respuesta exitosa
@@ -29,6 +30,7 @@ const router = express.Router();
  *         description: Error en la petición
  */
 
-router.post("/login", login);
+router.post("/", createAnimal);
+router.get("/", (req, res) => {});
 
 export default router;

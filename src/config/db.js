@@ -1,6 +1,6 @@
 import pkg from "pg";
 const { Client } = pkg;
-import { connectionConfig } from "../config/config.js";
+import { connectionConfig } from "./config.js";
 
 export const client = new Client(connectionConfig.connectionCongifDev);
 export const connectionToDatabase = async () => {

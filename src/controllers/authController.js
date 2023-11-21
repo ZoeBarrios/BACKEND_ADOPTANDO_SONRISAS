@@ -1,6 +1,7 @@
 import { compare } from "../services/bcryptService.js";
 import { getByUsername } from "../services/userService.js";
-import loginUserDTO from "../db/dtos/users/loginUserDTO.js";
+import { createToken } from "../services/jwtService.js";
+import loginUserDTO from "../DTOS/users/loginUserDTO.js";
 
 export const login = async (req, res) => {
   const { nombre, contraseña } = loginUserDTO.fromRequest(req);
@@ -22,11 +23,11 @@ export const login = async (req, res) => {
       .status(400)
       .send({ message: "Usuario o contraseña incorrectos" });
   }
+  const UserDTO = loginUserDTO.toResponse(user);
+  const token = createToken(UserDTO);
   return res
     .status(200)
-    .send({ message: "Login exitoso", user: loginUserDTO.toResponse(user) });
+    .send({ message: "Login exitoso", user: UserDTO, token });
 };
-
-export const logout = async (req, res) => {};
 
 export const register = async (req, res) => {};
