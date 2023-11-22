@@ -1,11 +1,17 @@
-const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024;
+import { initializeApp } from "firebase/app";
+import { firebaseConfig } from "../config/config.js";
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
+
+initializeApp(firebaseConfig.firebase);
+const storage = getStorage();
 
 const uploadImgs = async (file) => {
   try {
-    if (file.size > MAX_FILE_SIZE_BYTES) {
-      throw new Error("El tamaño del archivo es demasiado grande.");
-    }
-
     const storageRef = ref(
       storage,
       `files/${file.originalname + "       " + Date.now()}`
@@ -21,6 +27,7 @@ const uploadImgs = async (file) => {
     const downloadURL = await getDownloadURL(snapshot.ref);
     return downloadURL;
   } catch (err) {
+    console.log(err);
     throw new Error(err);
   }
 };

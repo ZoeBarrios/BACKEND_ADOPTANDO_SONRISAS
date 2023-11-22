@@ -1,5 +1,6 @@
 import express from "express";
-import { createAnimal } from "../../controllers/animalsController.js";
+import { registerAnimal } from "../../controllers/animalsController.js";
+import authMiddleware from "../../middlewares/auth.js";
 const router = express.Router();
 
 /**
@@ -16,21 +17,33 @@ const router = express.Router();
  *           schema:
  *             type: object
  *             properties:
- *               nombre:
+ *               name:
  *                 type: string
  *                 description: nombre del animal
- *               imagen:
+ *               description:
+ *                 type: string
+ *                 description: descripción del animal
+ *               sex:
+ *                 type: char(1)
+ *                 description: sexo del animal
+ *               age:
+ *                 type: integer
+ *                 description: edad del animal(dias)
+ *               size:
+ *                 type: string
+ *                 description: tamaño del animal
+ *               image:
  *                 type: string
  *                 format: binary
  *                 description: imagen del animal (archivo)
  *     responses:
- *       200:
+ *       201:
  *         description: Respuesta exitosa
  *       400:
  *         description: Error en la petición
  */
 
-router.post("/", createAnimal);
+router.post("/", authMiddleware, registerAnimal);
 router.get("/", (req, res) => {});
 
 export default router;

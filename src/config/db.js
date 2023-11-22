@@ -1,9 +1,23 @@
-import pkg from "pg";
-const { Client } = pkg;
+import { Sequelize } from "sequelize";
 import { connectionConfig } from "./config.js";
 
-export const client = new Client(connectionConfig.connectionCongifDev);
+export const sequelize = new Sequelize(
+  connectionConfig.database,
+  connectionConfig.user,
+  connectionConfig.password,
+  {
+    host: connectionConfig.host,
+    dialect: "postgres",
+    logging: false, //DESACTIVA LOS LOGS DE SQL
+  }
+);
+
 export const connectionToDatabase = async () => {
-  await client.connect();
-  console.log("Database connected");
+  try {
+    await sequelize.authenticate();
+    await sequelize.sync({ force: false });
+    console.log("Connection has been established successfully.");
+  } catch (error) {
+    console.error("Unable to connect to the database:", error.message);
+  }
 };

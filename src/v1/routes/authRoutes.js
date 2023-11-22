@@ -16,10 +16,10 @@ const router = express.Router();
  *           schema:
  *             type: object
  *             properties:
- *               nombre:
+ *               name:
  *                 type: string
  *                 description: nombre del usuario
- *               contraseña:
+ *               password:
  *                 type: string
  *                 description: contraseña del usuario
  *     responses:

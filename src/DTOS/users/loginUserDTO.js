@@ -1,21 +1,21 @@
 export default class loginUserDTO {
-  constructor(nombre, contraseña) {
-    this.nombre = nombre;
-    this.contraseña = contraseña;
+  constructor(name, password) {
+    this.name = name;
+    this.password = password;
   }
 
   static fromRequest(req) {
-    const { nombre, contraseña } = req.body;
-    return new loginUserDTO(nombre, contraseña);
+    const { name, password } = req.body;
+    return new loginUserDTO(name, password);
   }
 
   static toResponse(user) {
     return {
       id: user.id,
-      nombre: user.name,
-      apellido: user.surname,
+      name: user.name,
+      surname: user.surname,
       email: user.email,
-      rol: user.role,
+      role: user.role.role_name,
     };
   }
 }

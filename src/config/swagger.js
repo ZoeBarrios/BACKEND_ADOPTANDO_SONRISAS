@@ -9,6 +9,12 @@ const options = {
       version: "1.0.0",
       description: "API para poder acceder a la aplicación de AMOR PERRUNO",
     },
+    security: [
+      // Definición de seguridad global
+      {
+        JWT: [], // Aquí defines el nombre del esquema de seguridad
+      },
+    ],
   },
 
   apis: ["src/v1/routes/*.js"],

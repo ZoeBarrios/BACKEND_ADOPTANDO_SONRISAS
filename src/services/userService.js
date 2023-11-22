@@ -1,17 +1,22 @@
-import { client } from "../config/db.js";
-export const getAll = async () => {};
+import User from "../models/user.js";
+import Role from "../models/role.js";
 
 export const getByUsername = async (nombre) => {
-  const query = `SELECT * FROM users WHERE name = $1`;
-  const { rows } = await client.query(query, [nombre]);
-  if (rows.length === 0) {
-    return null;
+  try {
+    const user = await User.findOne({
+      where: { name: nombre },
+      include: [{ model: Role, attributes: ["role_name"] }],
+    });
+
+    if (!user) {
+      return null;
+    }
+
+    return user;
+  } catch (error) {
+    console.error("Error al obtener usuario por nombre:", error);
+    throw new Error(error);
   }
-  const role = await client.query(`SELECT role_name FROM roles WHERE id = $1`, [
-    rows[0].role,
-  ]);
-  rows[0].role = role.rows[0].role_name;
-  return rows[0];
 };
 
 export const create = async (createDTO) => {};
