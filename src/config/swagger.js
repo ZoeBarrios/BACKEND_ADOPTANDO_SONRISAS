@@ -8,11 +8,22 @@ const options = {
       title: "API de aplicación de AMOR PERRUNO",
       version: "1.0.0",
       description: "API para poder acceder a la aplicación de AMOR PERRUNO",
+      contact: {
+        email: "zoebarrios1@outlook.com",
+      },
+    },
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
     },
     security: [
-      // Definición de seguridad global
       {
-        JWT: [], // Aquí defines el nombre del esquema de seguridad
+        bearerAuth: [],
       },
     ],
   },
@@ -23,5 +34,9 @@ const options = {
 const specs = swaggerJsdoc(options);
 
 export default function (app) {
+  app.get("/swagger.json", (req, res) => {
+    res.setHeader("Content-Type", "application/json");
+    res.send(specs);
+  });
   app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 }

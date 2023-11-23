@@ -27,6 +27,7 @@ const router = express.Router();
  *         description: Respuesta exitosa
  *       400:
  *         description: Error en la petición
+ *     security: []
  */
 
 router.post("/login", login);
