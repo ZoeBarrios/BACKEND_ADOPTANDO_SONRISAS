@@ -1,5 +1,5 @@
 import express from "express";
-import { registerAnimal } from "../../controllers/animalsController.js";
+import { getAll, registerAnimal } from "../../controllers/animalsController.js";
 import authMiddleware from "../../middlewares/auth.js";
 const router = express.Router();
 
@@ -44,6 +44,27 @@ const router = express.Router();
  */
 
 router.post("/", authMiddleware, registerAnimal);
-router.get("/", (req, res) => {});
+
+/**
+ * @swagger
+ * /api/animals:
+ *   get:
+ *     summary: Obtener todos los animales
+ *     tags: [Animals]
+ *     description: Obtener todos los animales de la base de datos
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         required: false
+ *         description: Número de página para la paginación
+ *     responses:
+ *       200:
+ *         description: Respuesta exitosa
+ *     security: []
+ */
+
+router.get("/", getAll);
 
 export default router;
