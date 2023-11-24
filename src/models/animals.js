@@ -33,11 +33,8 @@ const Animal = sequelize.define(
         len: [1, 20],
       },
     },
-    age: {
-      type: DataTypes.INTEGER,
-      validate: {
-        min: 0,
-      },
+    birthdate: {
+      type: DataTypes.DATE,
     },
     img_url: {
       type: DataTypes.STRING,

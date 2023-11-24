@@ -27,7 +27,6 @@ const uploadImgs = async (file) => {
     const downloadURL = await getDownloadURL(snapshot.ref);
     return downloadURL;
   } catch (err) {
-    console.log(err);
     throw new Error(err);
   }
 };

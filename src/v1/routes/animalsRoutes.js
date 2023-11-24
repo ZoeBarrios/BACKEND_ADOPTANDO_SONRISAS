@@ -1,5 +1,11 @@
 import express from "express";
-import { getAll, registerAnimal } from "../../controllers/animalsController.js";
+import {
+  getAll,
+  getByGenre,
+  getById,
+  getInBirthdateRange,
+  registerAnimal,
+} from "../../controllers/animalsController.js";
 import authMiddleware from "../../middlewares/auth.js";
 const router = express.Router();
 
@@ -26,9 +32,9 @@ const router = express.Router();
  *               sex:
  *                 type: char(1)
  *                 description: sexo del animal
- *               age:
- *                 type: integer
- *                 description: edad del animal(dias)
+ *               birthdate:
+ *                 type: date
+ *                 description: fecha de nacimiento del animal
  *               size:
  *                 type: string
  *                 description: tamaño del animal
@@ -55,6 +61,7 @@ router.post("/", authMiddleware, registerAnimal);
  *     parameters:
  *       - in: query
  *         name: page
+ *         default: 1
  *         schema:
  *           type: integer
  *         required: false
@@ -66,5 +73,97 @@ router.post("/", authMiddleware, registerAnimal);
  */
 
 router.get("/", getAll);
+
+/**
+ * @swagger
+ * /api/animals/{id}:
+ *   get:
+ *     summary: Obtener un animal por su id
+ *     tags: [Animals]
+ *     description: Obtener un animal por su id de la base de datos
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: id del animal
+ *     responses:
+ *       200:
+ *         description: Respuesta exitosa
+ *       404:
+ *         description: Animal no encontrado
+ *     security: []
+ */
+
+router.get("/:id", getById);
+
+/**
+ * @swagger
+ * /api/animals/genre/{genre}/{page}:
+ *   get:
+ *     summary: Obtener todos los animales por género
+ *     tags: [Animals]
+ *     description: Obtener todos los animales por género de la base de datos
+ *     parameters:
+ *       - in: path
+ *         name: genre
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: género del animal
+ *       - in: path
+ *         name: page
+ *         default: 1
+ *         schema:
+ *           type: integer
+ *         required: false
+ *         description: Número de página para la paginación
+ *     responses:
+ *       200:
+ *         description: Respuesta exitosa
+ *       400:
+ *         description: Error en la petición
+ *     security: []
+ */
+
+router.get("/genre/:genre/:page", getByGenre);
+
+/**
+ * @swagger
+ * /api/animals/birthdate/{page}:
+ *   get:
+ *     summary: Obtener todos los animales por rango de edad
+ *     tags: [Animals]
+ *     description: Obtener todos los animales dentro de un rango de edad de la base de datos
+ *     parameters:
+ *       - in: query
+ *         name: min
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: Edad mínima del animal
+ *       - in: query
+ *         name: max
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: Edad máxima del animal
+ *       - in: path
+ *         name: page
+ *         default: 1
+ *         schema:
+ *           type: integer
+ *         required: false
+ *         description: Número de página para la paginación
+ *     responses:
+ *       200:
+ *         description: Respuesta exitosa
+ *       400:
+ *         description: Error en la petición
+ *     security: []
+ */
+
+router.get("/birthdate/:page", getInBirthdateRange);
 
 export default router;
