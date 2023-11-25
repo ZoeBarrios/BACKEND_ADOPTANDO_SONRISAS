@@ -13,6 +13,9 @@ export const getAnimals = async (page) => {
 
   try {
     const animals = await Animal.findAll({
+      where: {
+        adopted: false,
+      },
       offset,
       limit,
       include: [
@@ -37,6 +40,7 @@ export const getAnimalsByGenre = async (page, sex) => {
     const animals = await Animal.findAll({
       where: {
         sex: sex.toUpperCase(),
+        adopted: false,
       },
       offset,
       limit,
@@ -82,6 +86,7 @@ export const getAnimalsByAgeRange = async (minDays, maxDays, page) => {
           [Op.lt]: literal(`CURRENT_DATE - INTERVAL '${minDays} DAY'`),
           [Op.gt]: literal(`CURRENT_DATE - INTERVAL '${maxDays} DAY'`),
         },
+        adopted: false,
       },
       offset,
       limit,
@@ -99,5 +104,27 @@ export const getAnimalsByAgeRange = async (minDays, maxDays, page) => {
     throw new Error(
       `Error al obtener animales por rango de edad: ${error.message}`
     );
+  }
+};
+
+export const getAllAnimalAdmin = async (page) => {
+  const limit = 12;
+  const offset = limit * (page - 1);
+
+  try {
+    const animals = await Animal.findAll({
+      offset,
+      limit,
+      include: [
+        {
+          model: Organization,
+          as: "organization",
+          attributes: ["name"],
+        },
+      ],
+    });
+    return animals;
+  } catch (error) {
+    throw new Error(`Error al obtener animales: ${error.message}`);
   }
 };

@@ -4,6 +4,7 @@ import animalsDTO from "../DTOS/animals/animalsDTO.js";
 import animalDTO from "../DTOS/animals/animalDTO.js";
 import {
   createAnimal,
+  getAllAnimalAdmin,
   getAnimalById,
   getAnimals,
   getAnimalsByAgeRange,
@@ -69,6 +70,16 @@ export const getInBirthdateRange = async (req, res) => {
 
   try {
     const animals = await getAnimalsByAgeRange(min, max, page);
+    return res.status(200).json(animalsDTO.toResponse(animals));
+  } catch (error) {
+    return res.status(400).json({ message: error.message });
+  }
+};
+
+export const getAllAdmin = async (req, res) => {
+  const page = req.query.page || 1;
+  try {
+    const animals = await getAllAnimalAdmin(page);
     return res.status(200).json(animalsDTO.toResponse(animals));
   } catch (error) {
     return res.status(400).json({ message: error.message });

@@ -1,6 +1,7 @@
 import express from "express";
 import {
   getAll,
+  getAllAdmin,
   getByGenre,
   getById,
   getInBirthdateRange,
@@ -168,5 +169,30 @@ router.get("/genre/:genre/:page", getByGenre);
  */
 
 router.get("/birthdate/:page", getInBirthdateRange);
+
+/**
+ * @swagger
+ * /api/animals/admin/{page}:
+ *   get:
+ *     summary: Obtener todos los animales para el admin
+ *     tags: [Animals]
+ *     description: Obtener todos los animales para el admin de la base de datos
+ *     parameters:
+ *       - in: path
+ *         name: page
+ *         default: 1
+ *         schema:
+ *           type: integer
+ *         required: false
+ *         description: Número de página para la paginación
+ *     responses:
+ *       200:
+ *         description: Respuesta exitosa
+ *       400:
+ *         description: Error en la petición
+ *     security: []
+ */
+
+router.get("/admin/:page", authMiddleware, getAllAdmin);
 
 export default router;
