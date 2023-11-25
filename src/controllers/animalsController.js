@@ -40,7 +40,6 @@ export const getByGenre = async (req, res) => {
   const page = req.params.page || 1;
   const { genre } = req.params;
 
-  
   try {
     const animals = await getAnimalsByGenre(parseInt(page), genre);
 

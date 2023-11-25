@@ -1,5 +1,6 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/db.js";
+import Organization from "./organization.js";
 const Animal = sequelize.define(
   "animal",
   {
@@ -50,8 +51,16 @@ const Animal = sequelize.define(
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
     },
+    organization_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
   },
   { timestamps: false }
 );
 
+Animal.belongsTo(Organization, {
+  foreignKey: "organization_id",
+  as: "organization",
+});
 export default Animal;

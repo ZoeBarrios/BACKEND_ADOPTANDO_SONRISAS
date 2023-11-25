@@ -42,6 +42,9 @@ const router = express.Router();
  *                 type: string
  *                 format: binary
  *                 description: imagen del animal (archivo)
+ *               organization_id:
+ *                 type: integer
+ *                 description: id de la organización a la que pertenece el animal
  *     responses:
  *       201:
  *         description: Respuesta exitosa

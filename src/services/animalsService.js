@@ -1,5 +1,6 @@
 import Animal from "../models/animals.js";
 import { literal, Op } from "sequelize";
+import Organization from "../models/organization.js";
 
 export const createAnimal = async (animal) => {
   const animalCreated = await Animal.create(animal);
@@ -14,6 +15,13 @@ export const getAnimals = async (page) => {
     const animals = await Animal.findAll({
       offset,
       limit,
+      include: [
+        {
+          model: Organization,
+          as: "organization",
+          attributes: ["name"],
+        },
+      ],
     });
     return animals;
   } catch (error) {
@@ -32,6 +40,13 @@ export const getAnimalsByGenre = async (page, sex) => {
       },
       offset,
       limit,
+      include: [
+        {
+          model: Organization,
+          as: "organization",
+          attributes: ["name"],
+        },
+      ],
     });
     return animals;
   } catch (error) {
@@ -41,7 +56,15 @@ export const getAnimalsByGenre = async (page, sex) => {
 
 export const getAnimalById = async (id) => {
   try {
-    const animal = await Animal.findByPk(id);
+    const animal = await Animal.findByPk(id, {
+      include: [
+        {
+          model: Organization,
+          as: "organization",
+          attributes: ["name"],
+        },
+      ],
+    });
     return animal;
   } catch (error) {
     throw new Error(`Error al obtener animal: ${error.message}`);
@@ -62,6 +85,13 @@ export const getAnimalsByAgeRange = async (minDays, maxDays, page) => {
       },
       offset,
       limit,
+      include: [
+        {
+          model: Organization,
+          as: "organization",
+          attributes: ["name"],
+        },
+      ],
     });
 
     return animals;
