@@ -8,7 +8,9 @@ import {
   registerAnimal,
 } from "../../controllers/animalsController.js";
 import authMiddleware from "../../middlewares/auth.js";
+import multer from "multer";
 const router = express.Router();
+export const singleUploAD = multer().single("image");
 
 /**
  * @swagger
@@ -53,7 +55,7 @@ const router = express.Router();
  *         description: Error en la petición
  */
 
-router.post("/", authMiddleware, registerAnimal);
+router.post("/", authMiddleware, singleUploAD, registerAnimal);
 
 /**
  * @swagger

@@ -10,12 +10,12 @@ import {
   getAnimalsByAgeRange,
   getAnimalsByGenre,
 } from "../services/animalsService.js";
+import { uploadSingleImage } from "../services/imgService.js";
 
 export const registerAnimal = async (req, res) => {
   if (!req.file)
     return res.status(400).json({ message: "No se ha enviado ninguna imagen" });
-  const imgUrl = await uploadImgs(req.file);
-  req.body.img = imgUrl;
+  req.body.img = await uploadSingleImage(req.file);
   const animal = createAnimalDTO.fromRequest(req);
   try {
     await createAnimal(animal);
