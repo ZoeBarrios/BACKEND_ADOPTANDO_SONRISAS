@@ -1,6 +1,7 @@
-import { DataTypes } from "sequelize";
+import { DataTypes, literal } from "sequelize";
 import { sequelize } from "../config/db.js";
 import Organization from "./organization.js";
+
 const Adoption = sequelize.define(
   "adoption",
   {
@@ -11,8 +12,8 @@ const Adoption = sequelize.define(
     },
     adoption_date: {
       type: DataTypes.DATE,
+      defaultValue: literal("CURRENT_TIMESTAMP"),
       allowNull: false,
-      defaultValue: DataTypes.NOW,
     },
     responsable_name: {
       type: DataTypes.STRING,

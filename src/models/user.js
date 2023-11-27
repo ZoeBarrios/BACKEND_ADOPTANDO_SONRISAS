@@ -1,6 +1,7 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/db.js";
 import Role from "./Role.js";
+import { literal } from "sequelize";
 const User = sequelize.define(
   "user",
   {
@@ -44,7 +45,7 @@ const User = sequelize.define(
     },
     joined_date: {
       type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
+      defaultValue: literal("CURRENT_TIMESTAMP"),
     },
   },
   {

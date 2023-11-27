@@ -1,5 +1,6 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/db.js";
+import { literal } from "sequelize";
 const Donation = sequelize.define(
   "donation",
   {
@@ -14,8 +15,8 @@ const Donation = sequelize.define(
     },
     date: {
       type: DataTypes.DATEONLY,
+      defaultValue: literal("CURRENT_TIMESTAMP"),
       allowNull: false,
-      defaultValue: Date.now(),
     },
     donator_name: {
       type: DataTypes.STRING,

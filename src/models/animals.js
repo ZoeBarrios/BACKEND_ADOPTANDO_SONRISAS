@@ -1,6 +1,7 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/db.js";
 import Organization from "./organization.js";
+import { literal } from "sequelize";
 const Animal = sequelize.define(
   "animal",
   {
@@ -49,7 +50,7 @@ const Animal = sequelize.define(
     },
     admission_date: {
       type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
+      defaultValue: literal("CURRENT_TIMESTAMP"),
     },
     organization_id: {
       type: DataTypes.INTEGER,
