@@ -1,11 +1,13 @@
 import express from "express";
 import {
+  deleteAnimalById,
   getAll,
   getAllAdmin,
   getByGenre,
   getById,
   getInBirthdateRange,
   registerAnimal,
+  update,
 } from "../../controllers/animalsController.js";
 import authMiddleware from "../../middlewares/auth.js";
 import multer from "multer";
@@ -196,5 +198,61 @@ router.get("/birthdate/:page", getInBirthdateRange);
  */
 
 router.get("/admin/:page", authMiddleware, getAllAdmin);
+
+/**
+ * @swagger
+ * /api/animals/{id}:
+ *   delete:
+ *     summary: Eliminar un animal
+ *     tags: [Animals]
+ *     description: Eliminar un animal de la base de datos
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: id del animal
+ *     responses:
+ *       204:
+ *         description: Respuesta exitosa
+ *       400:
+ *         description: Error en la petición
+ *       401:
+ *         description: No autorizado
+ */
+
+router.delete("/:id", authMiddleware, deleteAnimalById);
+/**
+ * @swagger
+ * /api/:id:
+ *   put:
+ *     summary: actualizar animal
+ *     tags: [Animals]
+ *     description: actualizar animal en la base de datos
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: nombre del animal
+ *               description:
+ *                 type: string
+ *                 description: descripción del animal
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *                 description: imagen del animal (archivo)
+ *     responses:
+ *       201:
+ *         description: Respuesta exitosa
+ *       400:
+ *         description: Error en la petición
+ */
+router.put("/:id", authMiddleware, singleUploAD, update);
 
 export default router;

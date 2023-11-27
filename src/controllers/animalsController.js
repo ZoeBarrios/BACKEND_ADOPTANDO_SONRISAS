@@ -1,14 +1,15 @@
-import uploadImgs from "../utils/uploadImgs.js";
 import createAnimalDTO from "../DTOS/animals/createAnimalDTO.js";
 import animalsDTO from "../DTOS/animals/animalsDTO.js";
 import animalDTO from "../DTOS/animals/animalDTO.js";
 import {
   createAnimal,
+  deleteAnimal,
   getAllAnimalAdmin,
   getAnimalById,
   getAnimals,
   getAnimalsByAgeRange,
   getAnimalsByGenre,
+  updateAnimal,
 } from "../services/animalsService.js";
 import { uploadSingleImage } from "../services/imgService.js";
 
@@ -81,6 +82,39 @@ export const getAllAdmin = async (req, res) => {
   try {
     const animals = await getAllAnimalAdmin(page);
     return res.status(200).json(animalsDTO.toResponse(animals));
+  } catch (error) {
+    return res.status(400).json({ message: error.message });
+  }
+};
+
+export const deleteAnimalById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    await deleteAnimal(id);
+    return res.status(200).json({ message: "Animal eliminado" });
+  } catch (error) {
+    return res.status(400).json({ message: error.message });
+  }
+};
+
+export const update = async (req, res) => {
+  const { id } = req.params;
+  const { name, description } = req.body;
+  let obj = {};
+  if (req.file) {
+    obj.img_url = await uploadSingleImage(req.file);
+  }
+  if (name) {
+    obj.name = name;
+  }
+  if (description) {
+    obj.description = description;
+  }
+
+  try {
+    const animalUpdated = await updateAnimal(id, obj);
+    console.log(animalUpdated);
+    return res.status(200).json(animalDTO.toResponse(animalUpdated));
   } catch (error) {
     return res.status(400).json({ message: error.message });
   }

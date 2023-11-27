@@ -13,3 +13,21 @@ export const createImgCases = async (imgs, case_id) => {
     throw error;
   }
 };
+
+export const getByCaseId = async (case_id) => {
+  try {
+    const imgs = await Case_img.findAll({ where: { case_id } });
+    return imgs;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteByCaseId = async (case_id) => {
+  try {
+    const imgs = await Case_img.destroy({ where: { case_id } });
+    return imgs;
+  } catch (error) {
+    throw error;
+  }
+};

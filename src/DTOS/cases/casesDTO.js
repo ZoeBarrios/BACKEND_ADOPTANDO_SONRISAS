@@ -1,4 +1,4 @@
-export default class caseDTO {
+export default class casesDTO {
   constructor(id, title, imgs) {
     this.id = id;
     this.title = title;
@@ -7,6 +7,6 @@ export default class caseDTO {
 
   static toResponse(caso, imgs) {
     const { title, id } = caso;
-    return new caseDTO(id, title, imgs);
+    return new casesDTO(id, title, imgs);
   }
 }

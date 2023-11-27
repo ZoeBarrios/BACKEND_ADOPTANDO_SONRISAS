@@ -55,6 +55,10 @@ const Animal = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    eliminated: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
   },
   { timestamps: false }
 );

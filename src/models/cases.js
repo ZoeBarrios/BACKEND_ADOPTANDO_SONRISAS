@@ -1,5 +1,6 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/db.js";
+import Animal from "./animals.js";
 const Case = sequelize.define(
   "case",
   {
@@ -27,5 +28,7 @@ const Case = sequelize.define(
   },
   { timestamps: false }
 );
+
+Case.belongsTo(Animal, { foreignKey: "animal_id", as: "animal" });
 
 export default Case;

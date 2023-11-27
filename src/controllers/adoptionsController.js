@@ -7,11 +7,13 @@ import {
   getAllAdoptionsByMonth,
   getAllAdoptionsByYear,
 } from "../services/adoptionsService.js";
+import { setAnimalAdopted } from "../services/animalsService.js";
 
 export const registerAdoption = async (req, res) => {
   const adoptionCreatedDto = createAdoptionDTO.fromRequest(req);
   try {
     const adoption = await createAdoption(adoptionCreatedDto);
+    await setAnimalAdopted(adoptionCreatedDto.animalId);
     res.status(201).json(adoptionDTO.toResponse(adoption));
   } catch (err) {
     res.status(400).json({ error: err.message });

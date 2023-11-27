@@ -1,6 +1,10 @@
 import express from "express";
 const router = express.Router();
-import { registerCase } from "../../controllers/casesController.js";
+import {
+  getCase,
+  getCases,
+  registerCase,
+} from "../../controllers/casesController.js";
 import multer from "multer";
 export const multipleUpload = multer().array("images", 3);
 /**
@@ -39,9 +43,47 @@ export const multipleUpload = multer().array("images", 3);
  *         description: Error en la petición
  *       401:
  *         description: No autorizado
- *     security: []
  */
 
 router.post("/", multipleUpload, registerCase);
+
+/**
+ * @swagger
+ * /api/cases/all:
+ *   get:
+ *     summary: Obtener todos los casos
+ *     tags: [Cases]
+ *     description: Obtener todos los casos
+ *     responses:
+ *       200:
+ *         description: Respuesta exitosa
+ *     security: []
+ */
+
+router.get("/all", getCases);
+
+/**
+ * @swagger
+ * /api/cases/{id}:
+ *   get:
+ *     summary: Obtener un caso por id
+ *     tags: [Cases]
+ *     description: Obtener un caso por id
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: id del caso
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Respuesta exitosa
+ *       404:
+ *         description: No encontrado
+ *       security: []
+ */
+
+router.get("/:id", getCase);
 
 export default router;
