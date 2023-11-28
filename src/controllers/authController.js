@@ -2,6 +2,9 @@ import { compare } from "../services/bcryptService.js";
 import { getByUsername } from "../services/userService.js";
 import { createToken } from "../services/jwtService.js";
 import loginUserDTO from "../DTOS/users/loginUserDTO.js";
+import createOrganizationDTO from "../DTOS/organizations/createOrganizationDTO.js";
+import { createOrganization } from "../services/organizationService.js";
+import organizationDTO from "../DTOS/organizations/organizationDTO.js";
 
 export const login = async (req, res) => {
   const { name, password } = loginUserDTO.fromRequest(req);
@@ -28,4 +31,15 @@ export const login = async (req, res) => {
   return res.status(200).send({ message: "Login exitoso", token });
 };
 
-export const register = async (req, res) => {};
+export const register = async (req, res) => {
+  const organization = createOrganizationDTO.fromRequest(req);
+  try {
+    const organizationCreated = await createOrganization(organization);
+    return res
+      .status(201)
+      .json(organizationDTO.toResponse(organizationCreated));
+  } catch (error) {
+    console.error("Error al registrar organización:", error);
+    return res.status(400).json({ message: "Error en la petición" });
+  }
+};

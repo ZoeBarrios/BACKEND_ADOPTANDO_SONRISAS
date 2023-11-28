@@ -225,7 +225,7 @@ router.get("/admin/:page", authMiddleware, getAllAdmin);
 router.delete("/:id", authMiddleware, deleteAnimalById);
 /**
  * @swagger
- * /api/:id:
+ * /api/{id}:
  *   put:
  *     summary: actualizar animal
  *     tags: [Animals]
