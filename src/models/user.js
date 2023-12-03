@@ -47,6 +47,12 @@ const User = sequelize.define(
       type: DataTypes.DATE,
       defaultValue: literal("CURRENT_TIMESTAMP"),
     },
+    phone: {
+      type: DataTypes.STRING,
+      validate: {
+        len: [1, 30],
+      },
+    },
   },
   {
     timestamps: false,

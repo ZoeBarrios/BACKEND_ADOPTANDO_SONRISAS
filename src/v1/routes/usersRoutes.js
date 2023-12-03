@@ -41,6 +41,9 @@ const router = express.Router();
  *               password:
  *                 type: string
  *                 description: contraseña del usuario
+ *               phone:
+ *                 type: string
+ *                 description: teléfono del usuario
  *     responses:
  *       201:
  *         description: Respuesta exitosa
@@ -53,9 +56,9 @@ router.post("/", registerUser);
  * @swagger
  * /api/users/admins/{organization_id}:
  *   get:
- *     summary: Obtiene la cantidad de administradores de una organización
+ *     summary: Obtiene los administradores de una organización
  *     tags: [Users]
- *     description: Obtiene la cantidad de administradores de una organización
+ *     description: Obtiene los administradores de una organización
  *     parameters:
  *       - in: path
  *         name: organization_id
@@ -75,9 +78,9 @@ router.get("/admins/:organization_id", getAdminsByOrganization);
  * @swagger
  * /api/users/moderators/{organization_id}:
  *   get:
- *     summary: Obtiene la cantidad de moderadores de una organización
+ *     summary: Obtiene los moderadores de una organización
  *     tags: [Users]
- *     description: Obtiene la cantidad de moderadores de una organización
+ *     description: Obtiene los moderadores de una organización
  *     parameters:
  *       - in: path
  *         name: organization_id

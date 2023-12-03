@@ -1,11 +1,6 @@
 import userDTO from "../DTOS/users/userDTO.js";
 import createUserDTO from "../DTOS/users/createUserDTO.js";
-import { ROLES } from "../utils/constants.js";
-import {
-  createAdmin,
-  createModerator,
-  getByUsername,
-} from "../services/userService.js";
+import { createUser, getByUsername } from "../services/userService.js";
 import {
   getTotalAdminsByOrganization,
   getTotalModeratorsByOrganization,
@@ -20,11 +15,10 @@ export const registerUser = async (req, res) => {
     if (user) {
       return res.status(400).json({ message: "El usuario ya existe" });
     }
-    let userCreated = null;
-    if (role == ROLES.ADMIN) {
-      userCreated = await createAdmin(newUser);
-    } else if (role == ROLES.MODERATOR) {
-      userCreated = await createModerator(newUser);
+    let userCreated = newUser;
+
+    if (role) {
+      userCreated = await createUser(newUser, role);
     } else {
       return res.status(400).json({ message: "El rol no es válido" });
     }

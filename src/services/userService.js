@@ -22,30 +22,31 @@ export const getByUsername = async (nombre) => {
   }
 };
 
-export const createAdmin = async (user) => {
+export const getById = async (id) => {
   try {
-    const role = await Role.findOne({ where: { role_name: ROLES.ADMIN } });
-    user.role_id = role.id;
-    user.password = await hash(user.password);
-    const newUser = await User.create(user);
-    await createUsers_organizations({
-      user_id: newUser.id,
-      organization_id: user.organization_id,
-    });
-    return newUser;
+    const user = await User.findByPk(id);
+    if (!user) {
+      return null;
+    }
+    return user;
   } catch (error) {
-    console.error("Error al crear usuario:", error);
+    console.error("Error al obtener usuario por id:", error);
     throw new Error(error);
   }
 };
 
-export const createModerator = async (user) => {
+export const createUser = async (user, role) => {
   try {
-    const role = await Role.findOne({ where: { role_name: ROLES.MODERATOR } });
-    user.role_id = role.id;
+    const roleFound = await Role.findOne({ where: { role_name: role } });
+    if (!roleFound) {
+      throw new Error("El rol no existe");
+    }
+    user.role_id = roleFound.id;
     user.password = await hash(user.password);
-
     const newUser = await User.create(user);
+    if (role == ROLES.USER) {
+      return newUser;
+    }
     await createUsers_organizations({
       user_id: newUser.id,
       organization_id: user.organization_id,

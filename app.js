@@ -7,7 +7,7 @@ import auth from "./src/v1/routes/authRoutes.js";
 import animals from "./src/v1/routes/animalsRoutes.js";
 import adoptions from "./src/v1/routes/adoptionsRoutes.js";
 import cases from "./src/v1/routes/casesRoutes.js";
-import donations from "./src/v1/routes/donationsRoutes.js";
+import volunteers from "./src/v1/routes/volunteerRoutes.js";
 import organizations from "./src/v1/routes/organizationsRoutes.js";
 import { responseHandler } from "./src/middlewares/responseHandler.js";
 import { connectionToDatabase } from "./src/config/db.js";
@@ -30,7 +30,7 @@ app.use("/api/users", authMiddleware, usuarios);
 app.use("/api/animals", animals);
 app.use("/api/adoptions", authMiddleware, adoptions);
 app.use("/api/cases", cases);
-app.use("/api/donations", donations);
 app.use("/api/organizations", organizations);
+app.use("/api/volunteers", authMiddleware, volunteers);
 
 export default app;
