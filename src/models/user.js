@@ -53,6 +53,10 @@ const User = sequelize.define(
         len: [1, 30],
       },
     },
+    token_password: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   {
     timestamps: false,

@@ -3,9 +3,8 @@ import {
   deleteAnimalById,
   getAll,
   getAllAdmin,
-  getByGenre,
   getById,
-  getInBirthdateRange,
+  getFiltered,
   registerAnimal,
   update,
 } from "../../controllers/animalsController.js";
@@ -58,7 +57,6 @@ export const singleUploAD = multer().single("image");
  */
 
 router.post("/", authMiddleware, singleUploAD, registerAnimal);
-
 /**
  * @swagger
  * /api/animals:
@@ -84,7 +82,7 @@ router.get("/", getAll);
 
 /**
  * @swagger
- * /api/animals/{id}:
+ * /api/animals/animal/{id}:
  *   get:
  *     summary: Obtener un animal por su id
  *     tags: [Animals]
@@ -104,76 +102,7 @@ router.get("/", getAll);
  *     security: []
  */
 
-router.get("/:id", getById);
-
-/**
- * @swagger
- * /api/animals/genre/{genre}/{page}:
- *   get:
- *     summary: Obtener todos los animales por género
- *     tags: [Animals]
- *     description: Obtener todos los animales por género de la base de datos
- *     parameters:
- *       - in: path
- *         name: genre
- *         schema:
- *           type: string
- *         required: true
- *         description: género del animal
- *       - in: path
- *         name: page
- *         default: 1
- *         schema:
- *           type: integer
- *         required: false
- *         description: Número de página para la paginación
- *     responses:
- *       200:
- *         description: Respuesta exitosa
- *       400:
- *         description: Error en la petición
- *     security: []
- */
-
-router.get("/genre/:genre/:page", getByGenre);
-
-/**
- * @swagger
- * /api/animals/birthdate/{page}:
- *   get:
- *     summary: Obtener todos los animales por rango de edad
- *     tags: [Animals]
- *     description: Obtener todos los animales dentro de un rango de edad de la base de datos
- *     parameters:
- *       - in: query
- *         name: min
- *         schema:
- *           type: integer
- *         required: true
- *         description: Edad mínima del animal
- *       - in: query
- *         name: max
- *         schema:
- *           type: integer
- *         required: true
- *         description: Edad máxima del animal
- *       - in: path
- *         name: page
- *         default: 1
- *         schema:
- *           type: integer
- *         required: false
- *         description: Número de página para la paginación
- *     responses:
- *       200:
- *         description: Respuesta exitosa
- *       400:
- *         description: Error en la petición
- *     security: []
- */
-
-router.get("/birthdate/:page", getInBirthdateRange);
-
+router.get("/animal/:id", getById);
 /**
  * @swagger
  * /api/animals/admin/{page}:
@@ -225,7 +154,7 @@ router.get("/admin/:page", authMiddleware, getAllAdmin);
 router.delete("/:id", authMiddleware, deleteAnimalById);
 /**
  * @swagger
- * /api/{id}:
+ * /api/animals/{id}:
  *   put:
  *     summary: actualizar animal
  *     tags: [Animals]
@@ -254,5 +183,40 @@ router.delete("/:id", authMiddleware, deleteAnimalById);
  *         description: Error en la petición
  */
 router.put("/:id", authMiddleware, singleUploAD, update);
+
+/**
+ * @swagger
+ * /api/animals/filter:
+ *   get:
+ *     summary: Obtener todos los animales
+ *     tags:
+ *       - Animals
+ *     description: Obtener todos los animales de la base de datos
+ *     parameters:
+ *       - in: query
+ *         name: genre
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: Género del animal
+ *       - in: query
+ *         name: maxDays
+ *         schema:
+ *           type: integer
+ *         required: false
+ *         description: Número de días máximo de estancia del animal
+ *       - in: query
+ *         name: size
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: Tamaño del animal
+ *     responses:
+ *       200:
+ *         description: Respuesta exitosa
+ *     security: []
+ */
+
+router.get("/filter", getFiltered);
 
 export default router;

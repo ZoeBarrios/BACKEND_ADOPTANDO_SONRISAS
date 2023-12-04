@@ -8,3 +8,7 @@ export const createToken = (loginUserDto) => {
 export const verifyToken = (token) => {
   return jwt.verify(token, process.env.SECRET);
 };
+
+export const getInformationToken = (token) => {
+  return jwt.decode(token);
+};

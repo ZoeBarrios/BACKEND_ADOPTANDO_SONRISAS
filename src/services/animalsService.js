@@ -33,33 +33,6 @@ export const getAnimals = async (page) => {
   }
 };
 
-export const getAnimalsByGenre = async (page, sex) => {
-  const limit = 12;
-  const offset = limit * (page - 1);
-
-  try {
-    const animals = await Animal.findAll({
-      where: {
-        sex: sex.toUpperCase(),
-        adopted: false,
-        eliminated: false,
-      },
-      offset,
-      limit,
-      include: [
-        {
-          model: Organization,
-          as: "organization",
-          attributes: ["name"],
-        },
-      ],
-    });
-    return animals;
-  } catch (error) {
-    throw new Error(`Error al obtener animales: ${error.message}`);
-  }
-};
-
 export const getAnimalById = async (id) => {
   try {
     const animal = await Animal.findByPk(id, {
@@ -77,22 +50,37 @@ export const getAnimalById = async (id) => {
   }
 };
 
-export const getAnimalsByAgeRange = async (minDays, maxDays, page) => {
-  const limit = 12;
-  const offset = limit * (page - 1);
+export const getFilteredAnimal = (
+  genre = null,
+  maxDaysAge = null,
+  size = null
+) => {
+  let where = {
+    adopted: false,
+    eliminated: false,
+  };
+  if (genre) {
+    where = { ...where, sex: genre.toUpperCase() };
+  }
+  if (maxDaysAge) {
+    const maxDaysAsInteger = parseInt(maxDaysAge, 10);
+    if (!isNaN(maxDaysAsInteger)) {
+      where = {
+        ...where,
+        birthdate: {
+          [Op.gt]: literal(`CURRENT_DATE - INTERVAL '${maxDaysAsInteger} DAY'`),
+        },
+      };
+    }
+  }
+
+  if (size) {
+    where = { ...where, size: size.toUpperCase() };
+  }
 
   try {
-    const animals = await Animal.findAll({
-      where: {
-        birthdate: {
-          [Op.lt]: literal(`CURRENT_DATE - INTERVAL '${minDays} DAY'`),
-          [Op.gt]: literal(`CURRENT_DATE - INTERVAL '${maxDays} DAY'`),
-        },
-        adopted: false,
-        eliminated: false,
-      },
-      offset,
-      limit,
+    const animals = Animal.findAll({
+      where,
       include: [
         {
           model: Organization,
@@ -101,12 +89,9 @@ export const getAnimalsByAgeRange = async (minDays, maxDays, page) => {
         },
       ],
     });
-
     return animals;
   } catch (error) {
-    throw new Error(
-      `Error al obtener animales por rango de edad: ${error.message}`
-    );
+    throw new Error(`Error al obtener animales: ${error.message}`);
   }
 };
 

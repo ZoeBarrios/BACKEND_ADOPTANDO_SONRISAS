@@ -64,3 +64,15 @@ export const getOrganizationById = async (organizationId) => {
     throw error;
   }
 };
+
+export const updateOrganization = async (organizationId, organization) => {
+  try {
+    const organizationToUpdate = await Organization.findByPk(organizationId);
+    if (!organizationToUpdate) {
+      throw new Error("Organización no encontrada");
+    }
+    return await organizationToUpdate.update(organization);
+  } catch (error) {
+    throw error;
+  }
+};

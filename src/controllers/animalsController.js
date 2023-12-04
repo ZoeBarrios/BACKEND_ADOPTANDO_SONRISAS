@@ -7,8 +7,7 @@ import {
   getAllAnimalAdmin,
   getAnimalById,
   getAnimals,
-  getAnimalsByAgeRange,
-  getAnimalsByGenre,
+  getFilteredAnimal,
   updateAnimal,
 } from "../services/animalsService.js";
 import { uploadSingleImage } from "../services/imgService.js";
@@ -38,19 +37,6 @@ export const getAll = async (req, res) => {
   }
 };
 
-export const getByGenre = async (req, res) => {
-  const page = req.params.page || 1;
-  const { genre } = req.params;
-
-  try {
-    const animals = await getAnimalsByGenre(parseInt(page), genre);
-
-    return res.status(200).json(animalsDTO.toResponse(animals));
-  } catch (error) {
-    return res.status(400).json({ message: error.message });
-  }
-};
-
 export const getById = async (req, res) => {
   const { id } = req.params;
 
@@ -65,15 +51,14 @@ export const getById = async (req, res) => {
   }
 };
 
-export const getInBirthdateRange = async (req, res) => {
-  const { min, max } = req.query;
-  const { page } = req.params;
+export const getFiltered = async (req, res) => {
+  const { genre, maxDays, size } = req.query;
 
   try {
-    const animals = await getAnimalsByAgeRange(min, max, page);
+    const animals = await getFilteredAnimal(genre, maxDays, size);
     return res.status(200).json(animalsDTO.toResponse(animals));
   } catch (error) {
-    return res.status(400).json({ message: error.message });
+    return res.status(400).json({ message: error });
   }
 };
 

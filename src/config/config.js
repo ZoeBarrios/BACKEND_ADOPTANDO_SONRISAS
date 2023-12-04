@@ -1,8 +1,11 @@
 //Variables de configuracion de la aplicacion
+import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 dotenv.config();
 export const appConfig = {
   port: process.env.PORT || 4000,
+  url: process.env.URL || "http://localhost:4000",
+  email: process.env.EMAIL,
 };
 export const connectionConfig = {
   user: process.env.PGUSER,
@@ -23,3 +26,13 @@ export const firebaseConfig = {
     measurementId: process.env.MEASUREMENT_ID,
   },
 };
+
+export const transporter = nodemailer.createTransport({
+  host: "smtp-mail.outlook.com",
+  port: 587,
+  secure: false,
+  auth: {
+    user: process.env.EMAIL,
+    pass: process.env.PASSWORD,
+  },
+});

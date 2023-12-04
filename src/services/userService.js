@@ -4,6 +4,22 @@ import { createUsers_organizations } from "./users_organizationsService.js";
 import { ROLES } from "../utils/constants.js";
 import { hash } from "./bcryptService.js";
 
+export const getByEmail = async (email) => {
+  try {
+    const user = await User.findOne({
+      where: { email: email },
+      include: [{ model: Role, attributes: ["role_name"] }],
+    });
+    if (!user) {
+      return null;
+    }
+    return user;
+  } catch (error) {
+    console.error("Error al obtener usuario por email:", error);
+    throw new Error(error);
+  }
+};
+
 export const getByUsername = async (nombre) => {
   try {
     const user = await User.findOne({
@@ -18,6 +34,17 @@ export const getByUsername = async (nombre) => {
     return user;
   } catch (error) {
     console.error("Error al obtener usuario por nombre:", error);
+    throw new Error(error);
+  }
+};
+
+export const savePasswordToken = async (user, token) => {
+  try {
+    user.token_password = token;
+    await user.save();
+    return true;
+  } catch (error) {
+    console.error("Error al guardar token:", error);
     throw new Error(error);
   }
 };
@@ -54,6 +81,32 @@ export const createUser = async (user, role) => {
     return newUser;
   } catch (error) {
     console.error("Error al crear usuario:", error);
+    throw new Error(error);
+  }
+};
+
+export const updateUser = async (user, user_id) => {
+  try {
+    const userFound = await User.findByPk(user_id);
+    if (!userFound) {
+      throw new Error("El usuario no existe");
+    }
+
+    await userFound.update(user);
+    return userFound;
+  } catch (error) {
+    console.error("Error al actualizar usuario:", error);
+    throw new Error(error);
+  }
+};
+
+export const newPassword = async (user, password) => {
+  try {
+    user.password = await hash(password);
+    await user.save();
+    return true;
+  } catch (error) {
+    console.error("Error al actualizar contraseña:", error);
     throw new Error(error);
   }
 };

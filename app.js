@@ -9,6 +9,7 @@ import adoptions from "./src/v1/routes/adoptionsRoutes.js";
 import cases from "./src/v1/routes/casesRoutes.js";
 import volunteers from "./src/v1/routes/volunteerRoutes.js";
 import organizations from "./src/v1/routes/organizationsRoutes.js";
+import email from "./src/v1/routes/emailRoutes.js";
 import { responseHandler } from "./src/middlewares/responseHandler.js";
 import { connectionToDatabase } from "./src/config/db.js";
 
@@ -32,5 +33,6 @@ app.use("/api/adoptions", authMiddleware, adoptions);
 app.use("/api/cases", cases);
 app.use("/api/organizations", organizations);
 app.use("/api/volunteers", authMiddleware, volunteers);
+app.use("/api/email", email);
 
 export default app;
