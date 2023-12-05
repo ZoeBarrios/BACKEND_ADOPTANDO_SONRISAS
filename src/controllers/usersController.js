@@ -1,59 +1,54 @@
 import userDTO from "../DTOS/users/userDTO.js";
 import createUserDTO from "../DTOS/users/createUserDTO.js";
-import { createUser, getByUsername } from "../services/userService.js";
-import {
-  getTotalAdminsByOrganization,
-  getTotalModeratorsByOrganization,
-} from "../services/users_organizationsService.js";
+import { createUser, getById, getByUsername } from "../services/userService.js";
 
-export const registerUser = async (req, res) => {
+import { ERRORS } from "../utils/constants.js";
+
+export const registerUser = async (req, res, next) => {
   const { role } = req.query;
 
   try {
     const newUser = createUserDTO.fromRequest(req);
     const user = await getByUsername(newUser.name);
     if (user) {
-      return res.status(400).json({ message: "El usuario ya existe" });
+      return next(ERRORS.UserAlreadyExist);
     }
     let userCreated = newUser;
 
     if (role) {
       userCreated = await createUser(newUser, role);
     } else {
-      return res.status(400).json({ message: "El rol no es válido" });
+      return next(ERRORS.WrongRole);
     }
-
-    return res.status(201).json(userDTO.toResponse(userCreated));
+    return res.success(201, userDTO.toResponse(userCreated));
   } catch (error) {
-    console.log(error);
-    return res.status(400).json({ msg: error.message });
+    return next(error);
   }
 };
 
-export const getAdminsByOrganization = async (req, res) => {
-  const { organization_id } = req.params;
+export const getUser = async (req, res, next) => {
+  const { id } = req.params;
   try {
-    const users = await getTotalAdminsByOrganization(organization_id);
-    if (!users) {
-      return res.status(404).json({ message: "No hay usuarios" });
+    const user = await getById(id);
+    if (!user) {
+      return next(ERRORS.UserNotFound);
     }
-    return res.status(200).json(users);
+    return res.success(200, userDTO.toResponse(user));
   } catch (error) {
-    console.error("Error al obtener usuarios:", error);
-    return res.status(400).json({ msg: error.message });
+    next(error);
   }
 };
 
-export const getModeratorsByOrganization = async (req, res) => {
-  const { organization_id } = req.params;
+export const updateOneUser = async (req, res, next) => {
+  const { id } = req.params;
   try {
-    const users = await getTotalModeratorsByOrganization(organization_id);
-    if (!users) {
-      return res.status(404).json({ message: "No hay usuarios" });
+    const user = await getById(id);
+    if (!user) {
+      return next(ERRORS.UserNotFound);
     }
-    return res.status(200).json(users);
+    const userUpdated = await user.update(req.body);
+    return res.success(200, userDTO.toResponse(userUpdated));
   } catch (error) {
-    console.error("Error al obtener usuarios:", error);
-    return res.status(400).json({ msg: error.message });
+    next(error);
   }
 };

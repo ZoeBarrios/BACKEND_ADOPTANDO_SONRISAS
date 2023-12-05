@@ -1,7 +1,7 @@
 import User from "../models/user.js";
 import Role from "../models/role.js";
 import { createUsers_organizations } from "./users_organizationsService.js";
-import { ROLES } from "../utils/constants.js";
+import { ERRORS, ROLES } from "../utils/constants.js";
 import { hash } from "./bcryptService.js";
 
 export const getByEmail = async (email) => {
@@ -15,8 +15,8 @@ export const getByEmail = async (email) => {
     }
     return user;
   } catch (error) {
-    console.error("Error al obtener usuario por email:", error);
-    throw new Error(error);
+    console.error(error.message);
+    throw error;
   }
 };
 
@@ -33,8 +33,8 @@ export const getByUsername = async (nombre) => {
 
     return user;
   } catch (error) {
-    console.error("Error al obtener usuario por nombre:", error);
-    throw new Error(error);
+    console.error(error.message);
+    throw error;
   }
 };
 
@@ -44,8 +44,8 @@ export const savePasswordToken = async (user, token) => {
     await user.save();
     return true;
   } catch (error) {
-    console.error("Error al guardar token:", error);
-    throw new Error(error);
+    console.error(error.message);
+    throw error;
   }
 };
 
@@ -57,8 +57,8 @@ export const getById = async (id) => {
     }
     return user;
   } catch (error) {
-    console.error("Error al obtener usuario por id:", error);
-    throw new Error(error);
+    console.error(error.message);
+    throw error;
   }
 };
 
@@ -66,7 +66,7 @@ export const createUser = async (user, role) => {
   try {
     const roleFound = await Role.findOne({ where: { role_name: role } });
     if (!roleFound) {
-      throw new Error("El rol no existe");
+      throw new Error(ERRORS.WrongRole);
     }
     user.role_id = roleFound.id;
     user.password = await hash(user.password);
@@ -80,8 +80,8 @@ export const createUser = async (user, role) => {
     });
     return newUser;
   } catch (error) {
-    console.error("Error al crear usuario:", error);
-    throw new Error(error);
+    console.error(error.message);
+    throw error;
   }
 };
 
@@ -89,14 +89,14 @@ export const updateUser = async (user, user_id) => {
   try {
     const userFound = await User.findByPk(user_id);
     if (!userFound) {
-      throw new Error("El usuario no existe");
+      throw new Error(ERRORS.UserNotFound);
     }
 
     await userFound.update(user);
     return userFound;
   } catch (error) {
-    console.error("Error al actualizar usuario:", error);
-    throw new Error(error);
+    console.error(error.message);
+    throw error;
   }
 };
 
@@ -106,7 +106,7 @@ export const newPassword = async (user, password) => {
     await user.save();
     return true;
   } catch (error) {
-    console.error("Error al actualizar contraseña:", error);
-    throw new Error(error);
+    console.error(error.message);
+    throw error;
   }
 };

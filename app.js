@@ -12,6 +12,7 @@ import organizations from "./src/v1/routes/organizationsRoutes.js";
 import email from "./src/v1/routes/emailRoutes.js";
 import { responseHandler } from "./src/middlewares/responseHandler.js";
 import { connectionToDatabase } from "./src/config/db.js";
+import errorMiddleware from "./src/middlewares/errorMiddleware.js";
 
 const app = express();
 swaggerSetup(app);
@@ -34,5 +35,7 @@ app.use("/api/cases", cases);
 app.use("/api/organizations", organizations);
 app.use("/api/volunteers", authMiddleware, volunteers);
 app.use("/api/email", email);
+
+app.use(errorMiddleware);
 
 export default app;

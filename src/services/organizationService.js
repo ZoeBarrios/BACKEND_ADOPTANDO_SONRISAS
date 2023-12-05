@@ -1,4 +1,5 @@
 import Organization from "../models/organization.js";
+import { ERRORS } from "../utils/constants.js";
 export const createOrganization = async (organization) => {
   try {
     return await Organization.create(organization);
@@ -11,7 +12,7 @@ export const updateIsAcceptedOrganization = async (organizationId) => {
   try {
     const organization = await Organization.findByPk(organizationId);
     if (!organization) {
-      throw new Error("Organización no encontrada");
+      return null;
     }
 
     organization.isAccepted = true;
@@ -69,7 +70,7 @@ export const updateOrganization = async (organizationId, organization) => {
   try {
     const organizationToUpdate = await Organization.findByPk(organizationId);
     if (!organizationToUpdate) {
-      throw new Error("Organización no encontrada");
+      return null;
     }
     return await organizationToUpdate.update(organization);
   } catch (error) {

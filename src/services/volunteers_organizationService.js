@@ -1,31 +1,51 @@
 import Organization from "../models/organization.js";
 import Volunteer_Organization from "../models/volunteers_organization.js";
+
+import { getById } from "./userService.js";
 export const createVolunteer_Organization = async (volunteer_organization) => {
   try {
     const newVolunteer_Organization = await Volunteer_Organization.create(
       volunteer_organization
     );
-    return newVolunteer_Organization;
+    const volunteerOrganizationCreated = await Volunteer_Organization.findOne({
+      where: {
+        organization_id: volunteer_organization.organization_id,
+        user_id: volunteer_organization.user_id,
+        activity: volunteer_organization.activity,
+      },
+      include: [
+        {
+          model: Organization,
+        },
+      ],
+    });
+    return volunteerOrganizationCreated;
   } catch (error) {
-    console.error("Error al crear voluntario:", error);
-    throw new Error(error);
+    console.error(error);
+    throw error;
   }
 };
 
-export const getOrganizationByVolunteer = async (volunteer_id) => {
+export const getAllByVolunteerId = async (id) => {
   try {
+    const user = await getById(id);
+
     const organizations = await Volunteer_Organization.findAll({
       where: {
-        user_id: volunteer_id,
+        user_id: id,
       },
-      include: {
-        model: Organization,
-      },
+      include: [
+        {
+          model: Organization,
+          as: "organization",
+        },
+      ],
     });
+
     return organizations;
   } catch (error) {
-    console.error("Error al obtener organizaciones por voluntario:", error);
-    throw new Error(error);
+    console.error(error);
+    throw error;
   }
 };
 
@@ -41,7 +61,7 @@ export const deleteByOrganizationAndVolunterId = async (
       },
     });
   } catch (error) {
-    console.error("Error al eliminar voluntario:", error);
-    throw new Error(error);
+    console.error(error);
+    throw error;
   }
 };

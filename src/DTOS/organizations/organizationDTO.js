@@ -28,6 +28,7 @@ export default class organizationDTO {
       facebook_link,
     } = organization;
     return new organizationDTO(
+      id,
       name,
       description,
       phone,

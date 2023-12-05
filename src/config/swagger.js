@@ -5,9 +5,10 @@ const options = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "API de aplicación de AMOR PERRUNO",
+      title: "API de aplicación de Adoptando Sonrisas",
       version: "1.0.0",
-      description: "API para poder acceder a la aplicación de AMOR PERRUNO",
+      description:
+        "API para poder acceder a la aplicación de Adoptando Sonrisas",
       contact: {
         email: "zoebarrios1@outlook.com",
       },

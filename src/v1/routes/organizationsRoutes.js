@@ -2,14 +2,18 @@ import express from "express";
 import {
   acceptOrganization,
   getActive,
+  getAdminsByOrganization,
+  getModeratorsByOrganization,
   getOrganization,
   getPending,
+  updatOneOrganization,
 } from "../../controllers/organizationsController.js";
+import authMiddleware from "../../middlewares/auth.js";
 const router = express.Router();
 
 /**
  * @swagger
- * /api/organizations/{id}:
+ * /api/organizations/accept/{id}:
  *   put:
  *     summary: Aceptar una organización
  *     tags: [Organizations]
@@ -28,7 +32,54 @@ const router = express.Router();
  *         description: Error en la petición
  */
 
-router.put("/:id", acceptOrganization);
+router.put("/accept/:id", authMiddleware, acceptOrganization);
+
+/**
+ * @swagger
+ * /api/organizations/admins/{organization_id}:
+ *   get:
+ *     summary: Obtiene los administradores de una organización
+ *     tags: [Organizations]
+ *     description: Obtiene los administradores de una organización
+ *     parameters:
+ *       - in: path
+ *         name: organization_id
+ *         schema:
+ *           type: integer
+ *         description: id de la organización
+ *     responses:
+ *       200:
+ *         description: Respuesta exitosa
+ *       400:
+ *         description: Error en la petición
+ */
+
+router.get("/admins/:organization_id", authMiddleware, getAdminsByOrganization);
+
+/**
+ * @swagger
+ * /api/organizations/moderators/{organization_id}:
+ *   get:
+ *     summary: Obtiene los moderadores de una organización
+ *     tags: [Organizations]
+ *     description: Obtiene los moderadores de una organización
+ *     parameters:
+ *       - in: path
+ *         name: organization_id
+ *         schema:
+ *           type: integer
+ *         description: id de la organización
+ *     responses:
+ *       200:
+ *         description: Respuesta exitosa
+ *       400:
+ *         description: Error en la petición
+ */
+router.get(
+  "/moderators/:organization_id",
+  authMiddleware,
+  getModeratorsByOrganization
+);
 
 /**
  * @swagger
@@ -43,7 +94,7 @@ router.put("/:id", acceptOrganization);
  *       400:
  *         description: Error en la petición
  */
-router.get("/pending", getPending);
+router.get("/pending", authMiddleware, getPending);
 
 /**
  * @swagger
@@ -59,15 +110,15 @@ router.get("/pending", getPending);
  *         description: Error en la petición
  */
 
-router.get("/active", getActive);
+router.get("/active", authMiddleware, getActive);
 
 /**
  * @swagger
  * /api/organizations/{id}:
- *   get:
- *     summary: Obtener una organización
+ *   put:
+ *     summary: Actualizar una organización
  *     tags: [Organizations]
- *     description: Obtener una organización
+ *     description: Actualizar una organización
  *     parameters:
  *       - in: path
  *         name: id
@@ -75,13 +126,26 @@ router.get("/active", getActive);
  *           type: string
  *         required: true
  *         description: ID de la organización
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               description:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               instagram_link:
+ *                 type: string
+ *               facebook_link:
+ *                 type: string
  *     responses:
  *       200:
  *         description: Respuesta exitosa
  *       400:
  *         description: Error en la petición
- *     security: []
  */
-router.get("/:id", getOrganization);
+router.put("/:id", updatOneOrganization);
 
 export default router;

@@ -6,10 +6,11 @@ function responseHandler(req, res, next) {
     });
   };
 
-  res.error = function (status = 500, message) {
+  res.error = function (error_name, status = 500, message) {
     res.status(status).json({
       success: false,
-      message,
+      name: error_name,
+      message: message,
     });
   };
   next();
