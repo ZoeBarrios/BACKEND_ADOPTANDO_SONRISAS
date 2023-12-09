@@ -82,10 +82,9 @@ router.delete("/", deleteOrganizationFromVolunteers);
  *               user_id:
  *                 type: integer
  *                 description: ID del voluntario
- *               activity:
+ *               activity_id:
  *                 type: string
- *                 description: Actividad del voluntario
- *                 enum: ["Transitar","Donaciones de alimentos"]
+ *                 description: Id de Actividad del voluntario
  *     responses:
  *       201:
  *         description: Respuesta exitosa

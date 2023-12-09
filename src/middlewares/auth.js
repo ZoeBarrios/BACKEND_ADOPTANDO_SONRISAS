@@ -11,8 +11,7 @@ const authMiddleware = (req, res, next) => {
   try {
     const decodedToken = verifyToken(token);
     req.user = decodedToken;
-
-    next();
+    return next();
   } catch (error) {
     return next(ERRORS.Unauthorized);
   }

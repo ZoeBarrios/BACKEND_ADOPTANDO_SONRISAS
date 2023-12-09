@@ -146,6 +146,6 @@ router.get("/active", authMiddleware, getActive);
  *       400:
  *         description: Error en la petición
  */
-router.put("/:id", updatOneOrganization);
+router.put("/:id", authMiddleware, updatOneOrganization);
 
 export default router;

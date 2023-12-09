@@ -1,3 +1,5 @@
+import loginSchema from "../../../validationSchemes/loginScheme.js";
+import parseValidationError from "../../utils/parseValidationError.js";
 export default class loginUserDTO {
   constructor(name, password) {
     this.name = name;
@@ -5,6 +7,10 @@ export default class loginUserDTO {
   }
 
   static fromRequest(req) {
+    const { error, value } = loginSchema.validate(req.body);
+    if (error) {
+      parseValidationError(error);
+    }
     const { name, password } = req.body;
     return new loginUserDTO(name, password);
   }

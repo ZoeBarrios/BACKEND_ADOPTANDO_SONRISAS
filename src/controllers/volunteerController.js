@@ -1,4 +1,5 @@
 import VolunteerOrganizationDTO from "../DTOS/volunteers/volunteerOrganizationDTO.js";
+import { getActivityById } from "../services/activityService.js";
 import { getOrganizationById } from "../services/organizationService.js";
 import { getById } from "../services/userService.js";
 import {
@@ -41,7 +42,7 @@ export const deleteOrganizationFromVolunteers = async (req, res, next) => {
 };
 
 export const creatOrganizationVolunteer = async (req, res, next) => {
-  const { organization_id, user_id, activity } = req.body;
+  const { organization_id, user_id, activity_id } = req.body;
 
   try {
     const user = await getById(user_id);
@@ -53,10 +54,15 @@ export const creatOrganizationVolunteer = async (req, res, next) => {
     if (!organization) {
       return next(ERRORS.NotFound);
     }
+
+    const activity = await getActivityById(activity_id);
+    if (!activity) {
+      return next(ERRORS.NotFound);
+    }
     const volunteer_organization = await createVolunteer_Organization({
       organization_id,
       user_id,
-      activity,
+      activity_id,
     });
     return res.success(
       201,

@@ -4,8 +4,12 @@ import {
   getCase,
   getCases,
   registerCase,
+  updateOneCase,
 } from "../../controllers/casesController.js";
 import multer from "multer";
+import authMiddleware from "../../middlewares/auth.js";
+import checkRolesMiddleware from "../../middlewares/checkRolesMiddleware.js";
+import { ROLES } from "../../utils/constants.js";
 export const multipleUpload = multer().array("images", 3);
 /**
  * @swagger
@@ -45,7 +49,13 @@ export const multipleUpload = multer().array("images", 3);
  *         description: No autorizado
  */
 
-router.post("/", multipleUpload, registerCase);
+router.post(
+  "/",
+  authMiddleware,
+  checkRolesMiddleware([ROLES.ADMIN, ROLES.MODERATOR]),
+  multipleUpload,
+  registerCase
+);
 
 /**
  * @swagger
@@ -81,9 +91,53 @@ router.get("/all", getCases);
  *         description: Respuesta exitosa
  *       404:
  *         description: No encontrado
- *       security: []
+ *     security: []
  */
 
 router.get("/:id", getCase);
+
+/**
+ * @swagger
+ * /api/cases/{id}:
+ *   put:
+ *     summary: Actualizar un caso
+ *     tags: [Cases]
+ *     description: Actualizar un caso
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: id del caso
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               animal_id:
+ *                 type: integer
+ *                 description: id del animal
+ *               description:
+ *                 type: string
+ *                 description: descripción del caso
+ *               title:
+ *                 type: string
+ *                 description: título del caso
+ *     responses:
+ *       200:
+ *         description: Respuesta exitosa
+ *       404:
+ *         description: No encontrado
+ *       security: []
+ */
+router.put(
+  "/:id",
+  authMiddleware,
+  checkRolesMiddleware([ROLES.ADMIN, ROLES.MODERATOR]),
+  updateOneCase
+);
 
 export default router;

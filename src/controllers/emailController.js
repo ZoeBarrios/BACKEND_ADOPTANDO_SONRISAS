@@ -12,7 +12,9 @@ import {
   getById,
   savePasswordToken,
 } from "../services/userService.js";
-export const sendEmail = async (req, res) => {
+import { ERRORS } from "../utils/constants.js";
+
+export const sendEmail = async (req, res, next) => {
   const { destinatario, asunto, cuerpo } = req.body;
   const { id } = req.params;
 
@@ -26,20 +28,18 @@ export const sendEmail = async (req, res) => {
 
     send(mailOptions, organization.email);
 
-    return res.status(200).json({ message: "Email enviado exitosamente" });
+    return res.success(200, "Email enviado exitosamente");
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "Error al enviar el email", error: error.message });
+    next(error);
   }
 };
 
-export const forgotPassword = async (req, res) => {
+export const forgotPassword = async (req, res, next) => {
   const { email } = req.body;
   console.log(req.body);
   const user = await getByEmail(email);
   if (!user) {
-    return res.status(404).json({ message: "El usuario no existe" });
+    return next(ERRORS.UserNotFound);
   }
 
   const token = createToken({
@@ -54,17 +54,13 @@ export const forgotPassword = async (req, res) => {
   try {
     send(mailOptions, appConfig.email);
     await savePasswordToken(user, token);
-    return res
-      .status(200)
-      .json({ message: "Email enviado exitosamente", token: token });
+    return res.success(200, token);
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "Error al enviar el email", error: error.message });
+    next(error);
   }
 };
 
-export const resetPassword = async (req, res) => {
+export const resetPassword = async (req, res, next) => {
   const { token } = req.params;
   try {
     if (verifyToken(token)) {
@@ -72,17 +68,17 @@ export const resetPassword = async (req, res) => {
       const user = await getById(info.id);
 
       if (!user) {
-        return res.status(404).json({ message: "El usuario no existe" });
+        return next(ERRORS.UserNotFound);
       }
 
       if (user.token_password == token) {
-        return res.status(200).json({ message: "Token válido" });
+        return res.success(200, "Token válido");
       } else {
-        return res.status(400).json({ message: "Token inválido" });
+        return next(ERRORS.Unauthorized);
       }
     }
   } catch (error) {
     console.log(error);
-    return res.status(400).json({ message: "Token inválido" });
+    next(error);
   }
 };

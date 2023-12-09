@@ -1,10 +1,9 @@
 import express from "express";
 import {
   deleteAnimalById,
-  getAll,
+  getFiltered,
   getAllAdmin,
   getById,
-  getFiltered,
   registerAnimal,
   update,
 } from "../../controllers/animalsController.js";
@@ -62,23 +61,39 @@ router.post("/", authMiddleware, singleUploAD, registerAnimal);
  * /api/animals:
  *   get:
  *     summary: Obtener todos los animales
- *     tags: [Animals]
+ *     tags:
+ *       - Animals
  *     description: Obtener todos los animales de la base de datos
  *     parameters:
  *       - in: query
  *         name: page
- *         default: 1
  *         schema:
  *           type: integer
+ *         default: 1
  *         required: false
  *         description: Número de página para la paginación
+ *       - in: query
+ *         name: genre
+ *         schema:
+ *           type: string
+ *         description: Género del animal
+ *       - in: query
+ *         name: age
+ *         schema:
+ *           type: string
+ *         description: Edad del animal
+ *       - in: query
+ *         name: size
+ *         schema:
+ *           type: string
+ *         description: Tamaño del animal
  *     responses:
  *       200:
  *         description: Respuesta exitosa
  *     security: []
  */
 
-router.get("/", getAll);
+router.get("/", getFiltered);
 
 /**
  * @swagger
@@ -183,40 +198,5 @@ router.delete("/:id", authMiddleware, deleteAnimalById);
  *         description: Error en la petición
  */
 router.put("/:id", authMiddleware, singleUploAD, update);
-
-/**
- * @swagger
- * /api/animals/filter:
- *   get:
- *     summary: Obtener todos los animales
- *     tags:
- *       - Animals
- *     description: Obtener todos los animales de la base de datos
- *     parameters:
- *       - in: query
- *         name: genre
- *         schema:
- *           type: string
- *         required: false
- *         description: Género del animal
- *       - in: query
- *         name: maxDays
- *         schema:
- *           type: integer
- *         required: false
- *         description: Número de días máximo de estancia del animal
- *       - in: query
- *         name: size
- *         schema:
- *           type: string
- *         required: false
- *         description: Tamaño del animal
- *     responses:
- *       200:
- *         description: Respuesta exitosa
- *     security: []
- */
-
-router.get("/filter", getFiltered);
 
 export default router;

@@ -1,10 +1,26 @@
 import Animal from "../models/animals.js";
 import { literal, Op } from "sequelize";
 import Organization from "../models/organization.js";
+import { AGE } from "../utils/constants.js";
 
 export const createAnimal = async (animal) => {
   const animalCreated = await Animal.create(animal);
   return animalCreated;
+};
+
+export const getAnimalsByOrganization = async (organizationId, page) => {
+  try {
+    const animals = await Animal.findAll({
+      where: {
+        organization_id: organizationId,
+      },
+      offset: page,
+      limit: 12,
+    });
+    return animals;
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const getAnimals = async (page) => {
@@ -29,7 +45,7 @@ export const getAnimals = async (page) => {
     });
     return animals;
   } catch (error) {
-    throw new Error(`Error al obtener animales: ${error.message}`);
+    throw error;
   }
 };
 
@@ -46,40 +62,65 @@ export const getAnimalById = async (id) => {
     });
     return animal;
   } catch (error) {
-    throw new Error(`Error al obtener animal: ${error.message}`);
+    throw error;
   }
 };
 
-export const getFilteredAnimal = (
+export const getFilteredAnimal = async (
   genre = null,
-  maxDaysAge = null,
-  size = null
+  age = null,
+  size = null,
+  page = 1
 ) => {
+  const limitPerPage = 12;
+  const offset = (page - 1) * limitPerPage;
+
   let where = {
     adopted: false,
     eliminated: false,
   };
+
   if (genre) {
-    where = { ...where, sex: genre.toUpperCase() };
+    where.sex = genre.toUpperCase();
   }
-  if (maxDaysAge) {
-    const maxDaysAsInteger = parseInt(maxDaysAge, 10);
-    if (!isNaN(maxDaysAsInteger)) {
-      where = {
-        ...where,
-        birthdate: {
-          [Op.gt]: literal(`CURRENT_DATE - INTERVAL '${maxDaysAsInteger} DAY'`),
-        },
+
+  if (age) {
+    const currentDate = new Date();
+
+    if (age === AGE.CACHORRO) {
+      const oneYearAgo = new Date(currentDate);
+      oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+      where.birthdate = {
+        [Op.gte]: oneYearAgo,
+      };
+    }
+
+    if (age === AGE.ADULTO) {
+      const nineYearsAgo = new Date(currentDate);
+      nineYearsAgo.setFullYear(nineYearsAgo.getFullYear() - 9);
+      const oneYearAgo = new Date(currentDate);
+      oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+      where.birthdate = {
+        [Op.between]: [nineYearsAgo, oneYearAgo],
+      };
+    }
+
+    if (age === AGE.ANCIANO) {
+      const nineYearsAgo = new Date(currentDate);
+      nineYearsAgo.setFullYear(nineYearsAgo.getFullYear() - 9);
+      where.birthdate = {
+        [Op.lt]: nineYearsAgo,
       };
     }
   }
+  console.log(where);
 
   if (size) {
-    where = { ...where, size: size.toUpperCase() };
+    where.size = size.toUpperCase();
   }
 
   try {
-    const animals = Animal.findAll({
+    const animals = await Animal.findAll({
       where,
       include: [
         {
@@ -88,10 +129,12 @@ export const getFilteredAnimal = (
           attributes: ["name"],
         },
       ],
+      offset,
+      limit: limitPerPage,
     });
     return animals;
   } catch (error) {
-    throw new Error(`Error al obtener animales: ${error.message}`);
+    throw error;
   }
 };
 
@@ -116,7 +159,7 @@ export const getAllAnimalAdmin = async (page) => {
     });
     return animals;
   } catch (error) {
-    throw new Error(`Error al obtener animales: ${error.message}`);
+    throw error;
   }
 };
 
@@ -126,7 +169,7 @@ export const setAnimalAdopted = async (id) => {
     animal.adopted = true;
     await animal.save();
   } catch (error) {
-    throw new Error(`Error al actualizar animal: ${error.message}`);
+    throw error;
   }
 };
 
@@ -137,7 +180,7 @@ export const deleteAnimal = async (id) => {
     animal.eliminated = true;
     await animal.save();
   } catch (error) {
-    throw new Error(`Error al eliminar animal: ${error.message}`);
+    throw error;
   }
 };
 
@@ -156,6 +199,6 @@ export const updateAnimal = async (id, animal) => {
       throw new Error("No se pudo encontrar el animal actualizado");
     }
   } catch (error) {
-    throw new Error(`Error al actualizar animal: ${error.message}`);
+    throw error;
   }
 };

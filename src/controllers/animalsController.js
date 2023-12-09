@@ -11,78 +11,89 @@ import {
   updateAnimal,
 } from "../services/animalsService.js";
 import { uploadSingleImage } from "../services/imgService.js";
+import { ERRORS } from "../utils/constants.js";
 
-export const registerAnimal = async (req, res) => {
-  if (!req.file)
-    return res.status(400).json({ message: "No se ha enviado ninguna imagen" });
+export const registerAnimal = async (req, res, next) => {
+  if (!req.file) return next(ERRORS.NoImageSend);
   req.body.img = await uploadSingleImage(req.file);
   const animal = createAnimalDTO.fromRequest(req);
   try {
     await createAnimal(animal);
-    return res.status(201).json({ message: "Animal registrado" });
+    return res.success(201, "Animal registrado");
   } catch (error) {
-    return res.status(400).json({ message: error.message });
+    next(error);
   }
 };
 
-export const getAll = async (req, res) => {
+export const getAll = async (req, res, next) => {
   const page = req.query.page || 1;
 
   try {
     const animals = await getAnimals(page);
 
-    return res.status(200).json(animalsDTO.toResponse(animals));
+    return res.success(200, animalsDTO.toResponse(animals));
   } catch (error) {
-    return res.status(400).json({ message: error.message });
+    next(error);
   }
 };
 
-export const getById = async (req, res) => {
+export const getById = async (req, res, next) => {
   const { id } = req.params;
 
   try {
     const animal = await getAnimalById(id);
-    if (!animal)
-      return res.status(404).json({ message: "Animal no encontrado" });
+    if (!animal) return next(ERRORS.NotFound);
 
-    return res.status(200).json(animalDTO.toResponse(animal));
+    return res.success(200, animalDTO.toResponse(animal));
   } catch (error) {
-    return res.status(400).json({ message: error.message });
+    next(error);
   }
 };
 
-export const getFiltered = async (req, res) => {
-  const { genre, maxDays, size } = req.query;
+export const getFiltered = async (req, res, next) => {
+  const { genre, age, size } = req.query;
+  const page = req.query.page || 1;
 
   try {
-    const animals = await getFilteredAnimal(genre, maxDays, size);
-    return res.status(200).json(animalsDTO.toResponse(animals));
+    const animals = await getFilteredAnimal(genre, age, size, page);
+    return res.success(200, animalsDTO.toResponse(animals));
   } catch (error) {
-    return res.status(400).json({ message: error });
+    next(error);
   }
 };
 
-export const getAllAdmin = async (req, res) => {
+export const getAnimalsByOrganizationId = async (req, res, next) => {
+  const { id } = req.params;
+  const page = req.query.page || 1;
+  try {
+    const animals = await getAnimalsByOrganizationId(id, page);
+    return res.success(200, animalsDTO.toResponse(animals));
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getAllAdmin = async (req, res, next) => {
   const page = req.query.page || 1;
   try {
     const animals = await getAllAnimalAdmin(page);
-    return res.status(200).json(animalsDTO.toResponse(animals));
+    return res.success(200, animalsDTO.toResponse(animals));
   } catch (error) {
-    return res.status(400).json({ message: error.message });
+    next(error);
   }
 };
 
-export const deleteAnimalById = async (req, res) => {
+export const deleteAnimalById = async (req, res, next) => {
   const { id } = req.params;
   try {
     await deleteAnimal(id);
-    return res.status(200).json({ message: "Animal eliminado" });
+    return res.success(204, "Animal eliminado");
   } catch (error) {
-    return res.status(400).json({ message: error.message });
+    next(error);
   }
 };
 
-export const update = async (req, res) => {
+export const update = async (req, res, next) => {
   const { id } = req.params;
   const { name, description } = req.body;
   let obj = {};
@@ -99,8 +110,8 @@ export const update = async (req, res) => {
   try {
     const animalUpdated = await updateAnimal(id, obj);
     console.log(animalUpdated);
-    return res.status(200).json(animalDTO.toResponse(animalUpdated));
+    return res.success(200, "Animal actualizado");
   } catch (error) {
-    return res.status(400).json({ message: error.message });
+    next(error);
   }
 };

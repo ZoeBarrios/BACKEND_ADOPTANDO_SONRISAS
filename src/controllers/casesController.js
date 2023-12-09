@@ -3,25 +3,29 @@ import {
   createCase,
   getAllCases,
   getCaseById,
+  updateCase,
 } from "../services/casesService.js";
 import createCaseDTO from "../DTOS/cases/createCaseDTO.js";
 import caseDTO from "../DTOS/cases/caseDTO.js";
 import casesDTO from "../DTOS/cases/casesDTO.js";
+import updateCaseDTO from "../DTOS/cases/updateCaseDTO.js";
+import IdScheme from "../../validationSchemes/idScheme.js";
+import parseValidationError from "../utils/parseValidationError.js";
 
-export const registerCase = async (req, res) => {
-  const files = req.files;
-  const CaseDTO = createCaseDTO.fromRequest(req);
+export const registerCase = async (req, res, next) => {
   try {
+    const files = req.files;
+    const CaseDTO = createCaseDTO.fromRequest(req);
     const newCase = await createCase(CaseDTO);
     const imgsUrls = await createImgCases(files, newCase.id);
 
-    return res.status(201).json(caseDTO.toResponse(newCase, imgsUrls));
+    return res.success(201, caseDTO.toResponse(newCase, imgsUrls));
   } catch (error) {
-    return res.status(400).json({ error: error.message });
+    next(error);
   }
 };
 
-export const getCases = async (req, res) => {
+export const getCases = async (req, res, next) => {
   try {
     const cases = await getAllCases();
     const dtos = await Promise.all(
@@ -31,19 +35,38 @@ export const getCases = async (req, res) => {
       })
     );
 
-    return res.status(200).json(dtos);
+    return res.success(200, dtos);
   } catch (error) {
-    return res.status(400).json({ error: error.message });
+    next(error);
   }
 };
 
-export const getCase = async (req, res) => {
-  const { id } = req.params;
+export const getCase = async (req, res, next) => {
   try {
+    const { id } = req.params;
+    const { error, value } = IdScheme.validate({ id });
+    if (error) {
+      parseValidationError(error);
+    }
     const case_ = await getCaseById(id);
     const imgs = await getByCaseId(id);
-    return res.status(200).json(caseDTO.toResponse(case_, imgs));
+    return res.success(200, caseDTO.toResponse(case_, imgs));
   } catch (error) {
-    return res.status(404).json({ error: error.message });
+    next(error);
+  }
+};
+
+export const updateOneCase = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { error, value } = IdScheme.validate({ id });
+    if (error) {
+      parseValidationError(error);
+    }
+    const updateDTO = updateCaseDTO.fromRequest(req);
+    const updatedCase = await updateCase(id, updateDTO);
+    return res.success(200, caseDTO.toResponse(updatedCase));
+  } catch (error) {
+    next(error);
   }
 };

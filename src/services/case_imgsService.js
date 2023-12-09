@@ -16,7 +16,10 @@ export const createImgCases = async (imgs, case_id) => {
 
 export const getByCaseId = async (case_id) => {
   try {
-    const imgs = await Case_img.findAll({ where: { case_id } });
+    const imgs = await Case_img.findAll({
+      where: { case_id },
+      attributes: ["img_url"],
+    });
     return imgs;
   } catch (error) {
     throw error;

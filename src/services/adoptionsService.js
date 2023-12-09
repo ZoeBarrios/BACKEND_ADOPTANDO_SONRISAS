@@ -5,7 +5,7 @@ import Animal from "../models/animals.js";
 export const createAdoption = async (createAdoptionDTO) => {
   const animal = await Animal.findByPk(createAdoptionDTO.animal_id);
   if (!animal) {
-    throw new Error("Animal no encontrado");
+    return null;
   }
   return await Adoption.create(createAdoptionDTO);
 };
@@ -27,9 +27,6 @@ export const getAdoption = async (animal_id, organization_id) => {
     },
   });
 
-  if (!adoption) {
-    throw new Error("Adopcion no encontrada");
-  }
   return adoption;
 };
 
@@ -50,7 +47,7 @@ export const getAllAdoptionsByMonth = async (organization_id, num_month) => {
     });
     return adoptions.length;
   } catch (error) {
-    throw new Error(`Error al obtener adopciones: ${error.message}`);
+    throw error;
   }
 };
 

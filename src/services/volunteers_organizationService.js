@@ -11,7 +11,7 @@ export const createVolunteer_Organization = async (volunteer_organization) => {
       where: {
         organization_id: volunteer_organization.organization_id,
         user_id: volunteer_organization.user_id,
-        activity: volunteer_organization.activity,
+        activity: volunteer_organization.activity_id,
       },
       include: [
         {

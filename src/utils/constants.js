@@ -11,6 +11,12 @@ export const ROLES = {
   USER: "User",
 };
 
+export const AGE = {
+  CACHORRO: "CACHORRO",
+  ADULTO: "ADULTO",
+  ANCIANO: "ANCIANO",
+};
+
 export const ERRORS = {
   UserAlreadyExist: {
     name: "UsuarioExistente",
@@ -41,5 +47,25 @@ export const ERRORS = {
     name: "NoEncontrado",
     status: 404,
     message: "No se encontró el recurso",
+  },
+  WrongCredentials: {
+    name: "CredencialesIncorrectas",
+    status: 400,
+    message: "Usuario o contraseña incorrectos",
+  },
+  NoImageSend: {
+    name: "NoImagen",
+    status: 400,
+    message: "No se envió ninguna imagen",
+  },
+  IdRequired: {
+    name: "IdRequerido",
+    status: 400,
+    message: "El id es requerido",
+  },
+  NotEnoughPermissions: {
+    name: "PermisosInsuficientes",
+    status: 403,
+    message: "No tienes permisos suficientes para realizar esta acción",
   },
 };

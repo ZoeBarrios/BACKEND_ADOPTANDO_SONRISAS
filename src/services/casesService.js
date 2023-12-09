@@ -12,7 +12,7 @@ export const createCase = async (createCaseDTO) => {
   }
 };
 
-export const getAllCases = async () => {
+export const getAllCases = async (page) => {
   try {
     const cases = await Case.findAll({
       include: [
@@ -41,6 +41,17 @@ export const getCaseById = async (id) => {
     });
     if (!case_) throw new Error("El caso no existe");
     return case_;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateCase = async (id, updateCaseDTO) => {
+  try {
+    const case_ = await Case.findByPk(id);
+    if (!case_) return null;
+    const updatedCase = await case_.update(updateCaseDTO);
+    return updatedCase;
   } catch (error) {
     throw error;
   }
