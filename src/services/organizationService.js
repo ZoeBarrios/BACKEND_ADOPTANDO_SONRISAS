@@ -1,5 +1,6 @@
 import Organization from "../models/organization.js";
-import { ERRORS } from "../utils/constants.js";
+import { Op } from "sequelize";
+import { getPersons_OrganizationsByUserId } from "./person_organizationService.js";
 export const createOrganization = async (organization) => {
   try {
     return await Organization.create(organization);
@@ -50,6 +51,25 @@ export const getPendingOrganizations = async () => {
     return await Organization.findAll({
       where: {
         isAccepted: false,
+        isEliminated: false,
+      },
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getOrganizationsNotIn = async (personId) => {
+  const applys = await getPersons_OrganizationsByUserId(personId);
+  const organizationsId = applys.map((apply) => apply.organization_id);
+
+  try {
+    return await Organization.findAll({
+      where: {
+        organization_id: {
+          [Op.notIn]: organizationsId,
+        },
+        isAccepted: true,
         isEliminated: false,
       },
     });

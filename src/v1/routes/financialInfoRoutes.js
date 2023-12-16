@@ -8,7 +8,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /financial_info:
+ * /api/financialInfo:
  *   post:
  *     tags:
  *       - Financial Info
@@ -41,7 +41,7 @@ router.post("/", registerFinancialInfo);
 
 /**
  * @swagger
- * /financial_info/{organization_id}:
+ * /api/financialInfo/{organization_id}:
  *   get:
  *     tags:
  *       - Financial Info
@@ -60,13 +60,14 @@ router.post("/", registerFinancialInfo);
  *         description: Error de validación
  *       404:
  *         description: Información financiera no encontrada
+ *     security: []
  */
 
 router.get("/:organization_id", getFinancialInfoByOrganization);
 
 /**
  * @swagger
- * /financial_info/{id}:
+ * /api/financialInfo/{id}:
  *   put:
  *     tags:
  *       - Financial Info

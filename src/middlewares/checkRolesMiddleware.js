@@ -2,7 +2,7 @@ import { ERRORS } from "../utils/constants.js";
 
 const checkRoles = (requiredRoles) => {
   return (req, res, next) => {
-    const userRoles = req.user.role;
+    const userRoles = req.person.role;
 
     const hasRequiredRole =
       requiredRoles.filter((role) => role === userRoles).length > 0;

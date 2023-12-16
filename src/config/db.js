@@ -3,7 +3,7 @@ import { connectionConfig } from "./config.js";
 
 export const sequelize = new Sequelize(
   connectionConfig.database,
-  connectionConfig.user,
+  connectionConfig.person,
   connectionConfig.password,
   {
     host: connectionConfig.host,

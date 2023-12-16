@@ -1,6 +1,6 @@
 import express from "express";
 import { login, register } from "../../controllers/authController.js";
-import { registerUser } from "../../controllers/usersController.js";
+import { registerUser } from "../../controllers/personController.js";
 
 const router = express.Router();
 
@@ -35,7 +35,7 @@ const router = express.Router();
 router.post("/login", login);
 /**
  * @swagger
- * /api/auth/register:
+ * /api/auth/register/organizacion:
  *   post:
  *     summary: Registrar una organización
  *     tags: [Auth]
@@ -76,15 +76,15 @@ router.post("/login", login);
  *     security: []
  */
 
-router.post("/register", register);
+router.post("/register/organization", register);
 
 /**
  * @swagger
- * /api/auth/register/volunteer:
+ * /api/auth/register:
  *   post:
- *     summary: Crea un usuario voluntario
+ *     summary: Registrar un usuario
  *     tags: [Auth]
- *     description: Crea un usuario voluntario
+ *     description: Registrar un usuario
  *     parameters:
  *       - in: query
  *         name: role
@@ -106,9 +106,6 @@ router.post("/register", register);
  *               surname:
  *                 type: string
  *                 description: apellido del usuario
- *               organization_id:
- *                 type: integer
- *                 description: id de la organización
  *               email:
  *                 type: string
  *                 description: email del usuario
@@ -126,6 +123,6 @@ router.post("/register", register);
  *     security: []
  */
 
-router.post("/register/volunteer", registerUser);
+router.post("/register", registerUser);
 
 export default router;

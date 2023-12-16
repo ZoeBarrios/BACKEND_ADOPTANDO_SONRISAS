@@ -1,6 +1,6 @@
 export default class caseDTO {
-  constructor(id,title, description, imgs, animal) {
-    this.id = id;
+  constructor(case_id, title, description, imgs, animal) {
+    this.case_id = case_id;
     this.title = title;
     this.description = description;
     this.imgs = imgs;
@@ -8,7 +8,7 @@ export default class caseDTO {
   }
 
   static toResponse(caso, imgs) {
-    const { id,title, description, animal } = caso;
-    return new caseDTO(id,title, description, imgs, animal);
+    const { case_id, title, description, animal } = caso;
+    return new caseDTO(case_id, title, description, imgs, animal);
   }
 }

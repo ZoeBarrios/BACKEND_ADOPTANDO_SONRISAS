@@ -1,4 +1,4 @@
-import caseSchema from "../../../validationSchemes/caseScheme.js";
+import caseSchema from "../../validationSchemes/caseScheme.js";
 import parseValidationError from "../../utils/parseValidationError.js";
 
 export default class CreateCaseDTO {

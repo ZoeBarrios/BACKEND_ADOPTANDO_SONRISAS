@@ -1,5 +1,5 @@
-import userSchema from "../../../validationSchemes/userScheme.js";
-import { ERRORS } from "../../utils/constants.js";
+import personScheme from "../../validationSchemes/personScheme.js";
+import parseValidationError from "../../utils/parseValidationError.js";
 export default class CreateUserDTO {
   constructor(name, surname, email, password, organization_id, phone) {
     this.name = name;
@@ -11,22 +11,10 @@ export default class CreateUserDTO {
   }
 
   static fromRequest(request) {
-    const { error, value } = userSchema.validate(request.body);
+    const { error, value } = personScheme.validate(request.body);
 
     if (error) {
-      const errorMessages = error.details.map((err) => {
-        if (err.type === "any.required") {
-          return `El campo ${err.context.key} es obligatorio`;
-        }
-        return err.message;
-      });
-
-      const infError = {
-        ...ERRORS.ValidationError,
-        message: errorMessages,
-      };
-
-      throw infError;
+      parseValidationError(error);
     }
 
     return new CreateUserDTO(

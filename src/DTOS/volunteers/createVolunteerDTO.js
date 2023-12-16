@@ -1,5 +1,6 @@
-import volunteerSchema from "../../../validationSchemes/volunteerScheme";
+import volunteerSchema from "../../validationSchemes/volunteerScheme";
 import { ERRORS } from "../../utils/constants";
+import parseValidationError from "../../utils/parseValidationError";
 
 export default class CreateVolunteerDTO {
   constructor(organization_id, volunteer_id, activity) {
@@ -12,19 +13,7 @@ export default class CreateVolunteerDTO {
     const { error, value } = volunteerSchema.validate(request.body);
 
     if (error) {
-      const errorMessages = error.details.map((err) => {
-        if (err.type === "any.required") {
-          return `El campo ${err.context.key} es obligatorio`;
-        }
-        return err.message;
-      });
-
-      const infError = {
-        ...ERRORS.ValidationError,
-        message: errorMessages,
-      };
-
-      throw infError;
+      parseValidationError(error);
     }
     const { organization_id, volunteer_id, activity } = req.body;
     return new CreateVolunteerDTO(organization_id, volunteer_id, activity);

@@ -4,8 +4,10 @@ import {
   registerAdoption,
   getAllAdoptions,
   getOneAdoption,
-  getAdoptionsByMonth,
-  getAdoptionsByYear,
+  getAdoptionsByUserId,
+  getAdoptionsByOrganizationId,
+  accept,
+  cancel,
 } from "../../controllers/adoptionsController.js";
 
 /**
@@ -23,26 +25,14 @@ import {
  *           schema:
  *             type: object
  *             properties:
- *               organization_id:
- *                 type: integer
- *                 description: id de la organizacion que realizo la adopción
- *                 required: true
  *               animal_id:
  *                 type: integer
- *                 description: id del animal
+ *                 description: Id del animal
  *                 required: true
- *               responsable_name:
- *                 type: string
- *                 description: nombre del responsable
+ *               person_id:
+ *                 type: integer
+ *                 description: Id del usuario
  *                 required: true
- *               responsable_phone:
- *                 type: string
- *                 description: telefono del responsable
- *                 required: true
- *               responsable_address:
- *                 type: string
- *                 description: direccion del responsable
- *                 required: false
  *     responses:
  *       201:
  *         description: Respuesta exitosa
@@ -56,12 +46,12 @@ router.post("/", registerAdoption);
 
 /**
  * @swagger
- * /api/adoptions/{organizationId}:
+ * /api/adoptions/organization/{organizationId}:
  *   get:
- *     summary: Obtener todas las adopciones
+ *     summary: Obtener todas las adopciones de una organizacion
  *     tags:
  *       - Adoptions
- *     description: Obtener todas las adopciones de la base de datos
+ *     description: Obtener todas las adopciones de una organizacion
  *     parameters:
  *       - in: path
  *         name: organizationId
@@ -73,11 +63,11 @@ router.post("/", registerAdoption);
  *         description: Respuesta exitosa
  */
 
-router.get("/:organizationId", getAllAdoptions);
+router.get("/organization/:organizationId", getAdoptionsByOrganizationId);
 
 /**
  * @swagger
- * /api/adoptions/{organizationId}/{animalId}:
+ * /api/adoptions/one/{userId}/{animalId}:
  *   get:
  *     summary: Obtener una adopción
  *     tags:
@@ -85,7 +75,7 @@ router.get("/:organizationId", getAllAdoptions);
  *     description: Obtener una adopción de la base de datos
  *     parameters:
  *       - in: path
- *         name: organizationId
+ *         name: userId
  *         required: true
  *         schema:
  *           type: integer
@@ -101,24 +91,19 @@ router.get("/:organizationId", getAllAdoptions);
  *         description: Error en la petición
  */
 
-router.get("/:organizationId/:animalId", getOneAdoption);
+router.get("/one/:organizationId/:animalId", getOneAdoption);
 
 /**
  * @swagger
- * /api/adoptions/{organizationId}/month/{num_month}:
+ * /api/adoptions/person/{personId}:
  *   get:
- *     summary: Obtener todas las adopciones de un mes
+ *     summary: Obtener todas las adopciones de un usuario
  *     tags:
  *       - Adoptions
- *     description: Obtener todas las adopciones de un mes
+ *     description: Obtener todas las adopciones de un usuario de la base de datos
  *     parameters:
  *       - in: path
- *         name: organizationId
- *         required: true
- *         schema:
- *           type: integer
- *       - in: path
- *         name: num_month
+ *         name: personId
  *         required: true
  *         schema:
  *           type: integer
@@ -129,24 +114,24 @@ router.get("/:organizationId/:animalId", getOneAdoption);
  *         description: Error en la petición
  */
 
-router.get("/:organizationId/month/:num_month", getAdoptionsByMonth);
+router.get("/person/:personId", getAdoptionsByUserId);
 
 /**
  * @swagger
- * /api/adoptions/{organizationId}/year/{year}:
- *   get:
- *     summary: Obtener todas las adopciones de un año
+ * /api/adoptions/accept/{userId}/{animalId}
+ *   put:
+ *     summary: Aceptar una adopción
  *     tags:
  *       - Adoptions
- *     description: Obtener todas las adopciones de un año
+ *     description: Aceptar una adopción de la base de datos
  *     parameters:
  *       - in: path
- *         name: organizationId
+ *         name: userId
  *         required: true
  *         schema:
  *           type: integer
  *       - in: path
- *         name: year
+ *         name: animalId
  *         required: true
  *         schema:
  *           type: integer
@@ -157,6 +142,42 @@ router.get("/:organizationId/month/:num_month", getAdoptionsByMonth);
  *         description: Error en la petición
  */
 
-router.get("/:organizationId/year/:year", getAdoptionsByYear);
+router.put("/accept/:userId/:animalId", accept);
+
+/**
+ * @swagger
+ * /api/adoptions/cancel:
+ *   put:
+ *     summary: Cancelar una adopción
+ *     tags:
+ *       - Adoptions
+ *     description: Cancelar una adopción de la base de datos
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               animal_id:
+ *                 type: integer
+ *                 description: Id del animal
+ *               person_id:
+ *                 type: integer
+ *                 description: Id del usuario
+ *             required:
+ *               - animal_id
+ *               - person_id
+ *           example:
+ *             animal_id: 123
+ *             person_id: 456
+ *     responses:
+ *       200:
+ *         description: Respuesta exitosa
+ *       400:
+ *         description: Error en la petición
+ */
+
+router.put("/cancel", cancel);
 
 export default router;

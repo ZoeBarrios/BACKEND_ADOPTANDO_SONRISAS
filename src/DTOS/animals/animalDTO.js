@@ -1,6 +1,6 @@
 export default class animalDTO {
   constructor(
-    id,
+    animal_id,
     name,
     description,
     sex,
@@ -9,7 +9,7 @@ export default class animalDTO {
     img_url,
     organization
   ) {
-    this.id = id;
+    this.animal_id = animal_id;
     this.name = name;
     this.description = description;
     this.sex = sex;
@@ -20,7 +20,7 @@ export default class animalDTO {
   }
   static toResponse(animal) {
     const {
-      id,
+      animal_id,
       name,
       description,
       sex,
@@ -30,7 +30,7 @@ export default class animalDTO {
       organization,
     } = animal;
     return new animalDTO(
-      id,
+      animal_id,
       name,
       description,
       sex,

@@ -1,6 +1,7 @@
 import { DataTypes, literal } from "sequelize";
 import { sequelize } from "../config/db.js";
-import Organization from "./organization.js";
+import Animal from "./animal.js";
+import person from "./person.js";
 
 const Adoption = sequelize.define(
   "adoption",
@@ -10,32 +11,31 @@ const Adoption = sequelize.define(
       allowNull: false,
       primaryKey: true,
     },
+    person_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+    },
     adoption_date: {
       type: DataTypes.DATE,
       defaultValue: literal("CURRENT_TIMESTAMP"),
       allowNull: false,
     },
-    responsable_name: {
-      type: DataTypes.STRING,
+    isCancelled: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
       allowNull: false,
     },
-    responsable_phone: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    responsable_address: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    organization_id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
+    isAccepted: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
       allowNull: false,
     },
   },
   { timestamps: false }
 );
 
-Adoption.belongsTo(Organization, { foreignKey: "organization_id" });
+Adoption.belongsTo(Animal, { foreignKey: "animal_id" });
+Adoption.belongsTo(person, { foreignKey: "person_id" });
 
 export default Adoption;

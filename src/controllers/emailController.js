@@ -11,7 +11,7 @@ import {
   getByEmail,
   getById,
   savePasswordToken,
-} from "../services/userService.js";
+} from "../services/personService.js";
 import { ERRORS } from "../utils/constants.js";
 
 export const sendEmail = async (req, res, next) => {
@@ -37,13 +37,13 @@ export const sendEmail = async (req, res, next) => {
 export const forgotPassword = async (req, res, next) => {
   const { email } = req.body;
   console.log(req.body);
-  const user = await getByEmail(email);
-  if (!user) {
+  const person = await getByEmail(email);
+  if (!person) {
     return next(ERRORS.UserNotFound);
   }
 
   const token = createToken({
-    id: user.id,
+    id: person.person_id,
   });
   const url = `${appConfig.url}/api/email/reset_password/${token}`;
   const mailOptions = {
@@ -53,7 +53,7 @@ export const forgotPassword = async (req, res, next) => {
   };
   try {
     send(mailOptions, appConfig.email);
-    await savePasswordToken(user, token);
+    await savePasswordToken(person, token);
     return res.success(200, token);
   } catch (error) {
     next(error);
@@ -65,13 +65,13 @@ export const resetPassword = async (req, res, next) => {
   try {
     if (verifyToken(token)) {
       const info = getInformationToken(token);
-      const user = await getById(info.id);
+      const person = await getById(info.id);
 
-      if (!user) {
+      if (!person) {
         return next(ERRORS.UserNotFound);
       }
 
-      if (user.token_password == token) {
+      if (person.token_password == token) {
         return res.success(200, "Token válido");
       } else {
         return next(ERRORS.Unauthorized);

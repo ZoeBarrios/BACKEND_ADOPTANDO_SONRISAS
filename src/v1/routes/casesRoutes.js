@@ -59,18 +59,31 @@ router.post(
 
 /**
  * @swagger
- * /api/cases/all:
+ * /api/cases:
  *   get:
  *     summary: Obtener todos los casos
  *     tags: [Cases]
  *     description: Obtener todos los casos
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         required: false
+ *         description: Número de página
+ *         schema:
+ *           type: integer
+ *       - in: query
+ *         name: limit
+ *         required: false
+ *         description: Número de registros por página
+ *         schema:
+ *           type: integer
  *     responses:
  *       200:
  *         description: Respuesta exitosa
  *     security: []
  */
 
-router.get("/all", getCases);
+router.get("/", getCases);
 
 /**
  * @swagger

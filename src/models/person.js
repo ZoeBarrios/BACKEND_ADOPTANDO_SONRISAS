@@ -2,10 +2,10 @@ import { DataTypes } from "sequelize";
 import { sequelize } from "../config/db.js";
 import Role from "./Role.js";
 import { literal } from "sequelize";
-const User = sequelize.define(
-  "user",
+const Person = sequelize.define(
+  "person",
   {
-    id: {
+    person_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
@@ -57,12 +57,17 @@ const User = sequelize.define(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    isActive: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+    },
   },
   {
     timestamps: false,
+    tableName: "persons",
   }
 );
 
-User.belongsTo(Role, { foreignKey: "role_id" });
+Person.belongsTo(Role, { foreignKey: "role_id" });
 
-export default User;
+export default Person;

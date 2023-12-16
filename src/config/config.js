@@ -8,7 +8,7 @@ export const appConfig = {
   email: process.env.EMAIL,
 };
 export const connectionConfig = {
-  user: process.env.PGUSER,
+  person: process.env.PGUSER,
   host: process.env.PGHOST,
   database: process.env.PGDATABASE,
   password: process.env.PGPASSWORD,
@@ -32,7 +32,7 @@ export const transporter = nodemailer.createTransport({
   port: 587,
   secure: false,
   auth: {
-    user: process.env.EMAIL,
+    person: process.env.EMAIL,
     pass: process.env.PASSWORD,
   },
 });

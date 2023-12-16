@@ -1,5 +1,5 @@
-import Animal from "../models/animals.js";
-import { literal, Op } from "sequelize";
+import Animal from "../models/animal.js";
+import { Op } from "sequelize";
 import Organization from "../models/organization.js";
 import { AGE } from "../utils/constants.js";
 
@@ -38,7 +38,6 @@ export const getAnimals = async (page) => {
       include: [
         {
           model: Organization,
-          as: "organization",
           attributes: ["name"],
         },
       ],
@@ -56,7 +55,7 @@ export const getAnimalById = async (id) => {
         {
           model: Organization,
           as: "organization",
-          attributes: ["name"],
+          attributes: ["organization_id", "name"],
         },
       ],
     });
@@ -70,10 +69,10 @@ export const getFilteredAnimal = async (
   genre = null,
   age = null,
   size = null,
-  page = 1
+  page = 1,
+  limit = 12
 ) => {
-  const limitPerPage = 12;
-  const offset = (page - 1) * limitPerPage;
+  const offset = (page - 1) * limit;
 
   let where = {
     adopted: false,
@@ -87,7 +86,7 @@ export const getFilteredAnimal = async (
   if (age) {
     const currentDate = new Date();
 
-    if (age === AGE.CACHORRO) {
+    if (age === AGE.PUPPY) {
       const oneYearAgo = new Date(currentDate);
       oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
       where.birthdate = {
@@ -95,7 +94,7 @@ export const getFilteredAnimal = async (
       };
     }
 
-    if (age === AGE.ADULTO) {
+    if (age === AGE.ADULT) {
       const nineYearsAgo = new Date(currentDate);
       nineYearsAgo.setFullYear(nineYearsAgo.getFullYear() - 9);
       const oneYearAgo = new Date(currentDate);
@@ -105,7 +104,7 @@ export const getFilteredAnimal = async (
       };
     }
 
-    if (age === AGE.ANCIANO) {
+    if (age === AGE.OLD) {
       const nineYearsAgo = new Date(currentDate);
       nineYearsAgo.setFullYear(nineYearsAgo.getFullYear() - 9);
       where.birthdate = {
@@ -113,7 +112,6 @@ export const getFilteredAnimal = async (
       };
     }
   }
-  console.log(where);
 
   if (size) {
     where.size = size.toUpperCase();
@@ -126,11 +124,11 @@ export const getFilteredAnimal = async (
         {
           model: Organization,
           as: "organization",
-          attributes: ["name"],
+          attributes: ["organization_id", "name"],
         },
       ],
       offset,
-      limit: limitPerPage,
+      limit: limit,
     });
     return animals;
   } catch (error) {

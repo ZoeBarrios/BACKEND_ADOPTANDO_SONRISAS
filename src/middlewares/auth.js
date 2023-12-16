@@ -10,7 +10,7 @@ const authMiddleware = (req, res, next) => {
 
   try {
     const decodedToken = verifyToken(token);
-    req.user = decodedToken;
+    req.person = decodedToken;
     return next();
   } catch (error) {
     return next(ERRORS.Unauthorized);

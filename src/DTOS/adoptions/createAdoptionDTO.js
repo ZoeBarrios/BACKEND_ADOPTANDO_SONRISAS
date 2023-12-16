@@ -1,32 +1,17 @@
+import AdoptionScheme from "../../validationSchemes/adoptionScheme.js";
+import parseValidationError from "../../utils/parseValidationError.js";
+
 export default class createAdoptionDTO {
-  constructor({
-    animal_id,
-    organization_id,
-    responsable_name,
-    responsable_phone,
-    responsable_address,
-  }) {
+  constructor({ animal_id, person_id }) {
     this.animal_id = animal_id;
-    this.organization_id = organization_id;
-    this.responsable_name = responsable_name;
-    this.responsable_phone = responsable_phone;
-    this.responsable_address = responsable_address;
+    this.person_id = person_id;
   }
 
   static fromRequest(req) {
-    const {
-      animal_id,
-      organization_id,
-      responsable_name,
-      responsable_phone,
-      responsable_address,
-    } = req.body;
-    return new createAdoptionDTO({
-      animal_id,
-      organization_id,
-      responsable_name,
-      responsable_phone,
-      responsable_address,
-    });
+    const { error, value } = AdoptionScheme.validate(req.body);
+    if (error) {
+      parseValidationError(error);
+    }
+    return new createAdoptionDTO(req.body);
   }
 }

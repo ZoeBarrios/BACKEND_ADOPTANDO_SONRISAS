@@ -3,7 +3,7 @@ import { sequelize } from "../config/db.js";
 const Organization = sequelize.define(
   "organization",
   {
-    id: {
+    organization_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
@@ -22,7 +22,7 @@ const Organization = sequelize.define(
     },
     phone: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     email: {
       type: DataTypes.STRING,

@@ -1,4 +1,4 @@
-import loginSchema from "../../../validationSchemes/loginScheme.js";
+import loginSchema from "../../validationSchemes/loginScheme.js";
 import parseValidationError from "../../utils/parseValidationError.js";
 export default class loginUserDTO {
   constructor(name, password) {
@@ -15,13 +15,14 @@ export default class loginUserDTO {
     return new loginUserDTO(name, password);
   }
 
-  static toResponse(user) {
+  static toResponse(person) {
     return {
-      id: user.id,
-      name: user.name,
-      surname: user.surname,
-      email: user.email,
-      role: user.role.role_name,
+      id: person.person_id,
+      name: person.name,
+      surname: person.surname,
+      email: person.email,
+      phone: person.phone,
+      role: person.role.role_name,
     };
   }
 }

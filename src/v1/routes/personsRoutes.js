@@ -1,16 +1,19 @@
 import express from "express";
 import {
+  deletePersonFromOrganization,
+  getApplysByPersonId,
   getUser,
+  joinPersonToOrganization,
   registerUser,
   updateOneUser,
-} from "../../controllers/usersController.js";
+} from "../../controllers/personController.js";
 const router = express.Router();
 /**
  * @swagger
- * /api/users:
+ * /api/persons:
  *   post:
  *     summary: Crea un usuario admin o moderador
- *     tags: [Users]
+ *     tags: [Persons]
  *     description: Crea un usuario admin o moderador
  *     parameters:
  *       - in: query
@@ -64,10 +67,10 @@ router.post("/", registerUser);
 
 /**
  * @swagger
- * /api/users/{id}:
+ * /api/persons/{id}:
  *   put:
  *     summary: Actualiza un usuario
- *     tags: [Users]
+ *     tags: [Persons]
  *     description: Actualiza un usuario
  *     parameters:
  *       - in: path
@@ -108,10 +111,10 @@ router.put("/:id", updateOneUser);
 
 /**
  * @swagger
- * /api/users/{id}:
+ * /api/persons/{id}:
  *   get:
  *     summary: Obtiene un usuario por id
- *     tags: [Users]
+ *     tags: [Persons]
  *     description: Obtiene un usuario por id
  *     parameters:
  *       - in: path
@@ -128,5 +131,97 @@ router.put("/:id", updateOneUser);
  */
 
 router.get("/:id", getUser);
+
+/**
+ * @swagger
+ * /api/persons/apply:
+ *   post:
+ *     summary: Aplica a una organización
+ *     tags: [Persons]
+ *     description: Aplica a una organización
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               organization_id:
+ *                 type: integer
+ *                 description: id de la organización
+ *                 required: true
+ *               person_id:
+ *                 type: integer
+ *                 description: id del usuario
+ *                 required: true
+ *               activity_id:
+ *                 type: integer
+ *                 description: id de la actividad
+ *                 required: true
+ *     responses:
+ *       201:
+ *         description: Respuesta exitosa
+ *       404:
+ *         description: Usuario no encontrado
+ *       401:
+ *         description: No autorizado
+ */
+
+router.post("/apply", joinPersonToOrganization);
+/**
+ * @swagger
+ * /api/persons/apply/{id}:
+ *   get:
+ *     summary: Obtiene las aplicaciones de un usuario
+ *     tags: [Persons]
+ *     description: Obtiene las aplicaciones de un usuario
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: id del usuario
+ *     responses:
+ *       200:
+ *         description: Respuesta exitosa
+ *       400:
+ *         description: Error en la petición
+ */
+
+router.get("/apply/:id", getApplysByPersonId);
+
+/**
+ * @swagger
+ * /api/persons/apply:
+ *   delete:
+ *     summary: Elimina una aplicación
+ *     tags: [Persons]
+ *     description: Elimina una aplicación
+ *     responses:
+ *       200:
+ *         description: Respuesta exitosa
+ *       404:
+ *         description: Usuario no encontrado
+ *       401:
+ *         description: No autorizado
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               organization_id:
+ *                 type: integer
+ *                 description: id de la organización
+ *                 required: true
+ *               person_id:
+ *                 type: integer
+ *                 description: id del usuario
+ *                 required: true
+ */
+
+router.delete("/apply", deletePersonFromOrganization);
 
 export default router;

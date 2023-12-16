@@ -1,9 +1,12 @@
 export default class organizationsDTO {
-  constructor(id, name) {
-    this.id = id;
+  constructor(organization_id, name) {
+    this.organization_id = organization_id;
     this.name = name;
   }
   static toResponse(organization) {
-    return new organizationsDTO(organization.id, organization.name);
+    return new organizationsDTO(
+      organization.organization_id,
+      organization.name
+    );
   }
 }

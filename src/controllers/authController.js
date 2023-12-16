@@ -1,5 +1,5 @@
 import { compare } from "../services/bcryptService.js";
-import { getByUsername } from "../services/userService.js";
+import { getByUsername } from "../services/personService.js";
 import { createToken } from "../services/jwtService.js";
 import loginUserDTO from "../DTOS/users/loginUserDTO.js";
 import createOrganizationDTO from "../DTOS/organizations/createOrganizationDTO.js";
@@ -11,17 +11,17 @@ export const login = async (req, res, next) => {
   try {
     const { name, password } = loginUserDTO.fromRequest(req);
 
-    const user = await getByUsername(name);
-    if (!user) {
+    const person = await getByUsername(name);
+    if (!person) {
       return next(ERRORS.NotFound);
     }
 
-    const isMatch = await compare(password, user.password);
+    const isMatch = await compare(password, person.password);
 
     if (!isMatch) {
       return next(ERRORS.WrongCredentials);
     }
-    const UserDTO = loginUserDTO.toResponse(user);
+    const UserDTO = loginUserDTO.toResponse(person);
     const token = createToken(UserDTO);
     return res.success(200, { ...UserDTO, token });
   } catch (error) {
@@ -30,8 +30,8 @@ export const login = async (req, res, next) => {
 };
 
 export const register = async (req, res, next) => {
-  const organization = createOrganizationDTO.fromRequest(req);
   try {
+    const organization = createOrganizationDTO.fromRequest(req);
     const organizationCreated = await createOrganization(organization);
     return res.success(200, organizationDTO.toResponse(organizationCreated));
   } catch (error) {

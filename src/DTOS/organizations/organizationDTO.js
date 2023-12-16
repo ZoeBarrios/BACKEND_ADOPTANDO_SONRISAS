@@ -1,6 +1,6 @@
 export default class organizationDTO {
   constructor(
-    id,
+    organization_id,
     name,
     description,
     phone,
@@ -8,7 +8,7 @@ export default class organizationDTO {
     instagram_link,
     facebook_link
   ) {
-    this.id = id;
+    this.organization_id = organization_id;
     this.name = name;
     this.description = description;
     this.phone = phone;
@@ -19,7 +19,7 @@ export default class organizationDTO {
 
   static toResponse(organization) {
     const {
-      id,
+      organization_id,
       name,
       description,
       phone,
@@ -28,7 +28,7 @@ export default class organizationDTO {
       facebook_link,
     } = organization;
     return new organizationDTO(
-      id,
+      organization_id,
       name,
       description,
       phone,

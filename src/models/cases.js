@@ -1,10 +1,10 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/db.js";
-import Animal from "./animals.js";
+import Animal from "./animal.js";
 const Case = sequelize.define(
   "case",
   {
-    id: {
+    case_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,

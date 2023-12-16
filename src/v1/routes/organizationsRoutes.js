@@ -5,6 +5,7 @@ import {
   getAdminsByOrganization,
   getModeratorsByOrganization,
   getOrganization,
+  getOrganizationsNotApllied,
   getPending,
   updatOneOrganization,
 } from "../../controllers/organizationsController.js";
@@ -108,9 +109,34 @@ router.get("/pending", authMiddleware, getPending);
  *         description: Respuesta exitosa
  *       400:
  *         description: Error en la petición
+ *     security: []
  */
 
-router.get("/active", authMiddleware, getActive);
+router.get("/active", getActive);
+
+/**
+ * @swagger
+ * /api/organizations/active/user/{id}:
+ *   get:
+ *     summary: Obtener organizaciones activas de un usuario
+ *     tags: [Organizations]
+ *     description: Obtener organizaciones activas de un usuario
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: id del usuario
+ *     responses:
+ *       200:
+ *         description: Respuesta exitosa
+ *       400:
+ *         description: Error en la petición
+ *     security: []
+ */
+
+router.get("/active/user/:id", getOrganizationsNotApllied);
 
 /**
  * @swagger
@@ -147,5 +173,29 @@ router.get("/active", authMiddleware, getActive);
  *         description: Error en la petición
  */
 router.put("/:id", authMiddleware, updatOneOrganization);
+
+/**
+ * @swagger
+ * /api/organizations/{id}:
+ *   get:
+ *     summary: Obtener una organización
+ *     tags: [Organizations]
+ *     description: Obtener una organización
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID de la organización
+ *     responses:
+ *       200:
+ *         description: Respuesta exitosa
+ *       400:
+ *         description: Error en la petición
+ *     security: []
+ */
+
+router.get("/:id", getOrganization);
 
 export default router;

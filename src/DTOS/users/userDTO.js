@@ -1,6 +1,6 @@
 export default class userDTO {
-  constructor(id, name, surname, email, role_id, phone) {
-    this.id = id;
+  constructor(person_id, name, surname, email, role_id, phone) {
+    this.person_id = person_id;
     this.name = name;
     this.surname = surname;
     this.email = email;
@@ -8,8 +8,8 @@ export default class userDTO {
     this.phone = phone;
   }
 
-  static toResponse(user) {
-    const { id, name, surname, email, role_id, phone } = user;
-    return new userDTO(id, name, surname, email, role_id, phone);
+  static toResponse(person) {
+    const { person_id, name, surname, email, role_id, phone } = person;
+    return new userDTO(person_id, name, surname, email, role_id, phone);
   }
 }

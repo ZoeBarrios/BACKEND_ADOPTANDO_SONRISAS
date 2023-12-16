@@ -1,7 +1,7 @@
 export const SIZES = {
-  PEQUEÑO: "Pequeño",
-  MEDIANO: "Mediano",
-  GRANDE: "Grande",
+  SMALL: "SMALL",
+  MEDIUM: "MEDIUM",
+  BIG: "BIG",
 };
 
 export const ROLES = {
@@ -12,9 +12,13 @@ export const ROLES = {
 };
 
 export const AGE = {
-  CACHORRO: "CACHORRO",
-  ADULTO: "ADULTO",
-  ANCIANO: "ANCIANO",
+  PUPPY: "PUPPY",
+  ADULT: "ADULT",
+  OLD: "OLD",
+};
+
+export const ACTIVITIES = {
+  Management: "Gestion",
 };
 
 export const ERRORS = {
@@ -67,5 +71,20 @@ export const ERRORS = {
     name: "PermisosInsuficientes",
     status: 403,
     message: "No tienes permisos suficientes para realizar esta acción",
+  },
+  WrongActivity: {
+    name: "ActividadIncorrecta",
+    status: 400,
+    message: "La actividad no es válida",
+  },
+  ApplyAlreadyExists: {
+    name: "AplicaciónExistente",
+    status: 400,
+    message: "Ya has aplicado a esta organización",
+  },
+  AdoptionAlreadyExists: {
+    name: "AdopciónExistente",
+    status: 400,
+    message: "Ya has enviado una solicitud de adopción para este animal",
   },
 };

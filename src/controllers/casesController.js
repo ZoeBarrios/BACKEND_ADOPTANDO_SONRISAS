@@ -9,7 +9,7 @@ import createCaseDTO from "../DTOS/cases/createCaseDTO.js";
 import caseDTO from "../DTOS/cases/caseDTO.js";
 import casesDTO from "../DTOS/cases/casesDTO.js";
 import updateCaseDTO from "../DTOS/cases/updateCaseDTO.js";
-import IdScheme from "../../validationSchemes/idScheme.js";
+import IdScheme from "../validationSchemes/idScheme.js";
 import parseValidationError from "../utils/parseValidationError.js";
 
 export const registerCase = async (req, res, next) => {
@@ -17,7 +17,7 @@ export const registerCase = async (req, res, next) => {
     const files = req.files;
     const CaseDTO = createCaseDTO.fromRequest(req);
     const newCase = await createCase(CaseDTO);
-    const imgsUrls = await createImgCases(files, newCase.id);
+    const imgsUrls = await createImgCases(files, newCase.case_id);
 
     return res.success(201, caseDTO.toResponse(newCase, imgsUrls));
   } catch (error) {
@@ -26,11 +26,13 @@ export const registerCase = async (req, res, next) => {
 };
 
 export const getCases = async (req, res, next) => {
+  const page = req.query.page || 1;
+  const limit = req.query.limit || 10;
   try {
-    const cases = await getAllCases();
+    const cases = await getAllCases(page, limit);
     const dtos = await Promise.all(
       cases.map(async (case_) => {
-        const imgs = await getByCaseId(case_.id);
+        const imgs = await getByCaseId(case_.case_id);
         return casesDTO.toResponse(case_, imgs);
       })
     );

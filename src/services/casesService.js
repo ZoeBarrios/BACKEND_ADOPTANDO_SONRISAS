@@ -1,5 +1,5 @@
 import Case from "../models/cases.js";
-import Animal from "../models/animals.js";
+import Animal from "../models/animal.js";
 
 export const createCase = async (createCaseDTO) => {
   try {
@@ -12,7 +12,8 @@ export const createCase = async (createCaseDTO) => {
   }
 };
 
-export const getAllCases = async (page) => {
+export const getAllCases = async (page = 1, limit = 10) => {
+  const offset = (page - 1) * limit;
   try {
     const cases = await Case.findAll({
       include: [
@@ -21,6 +22,8 @@ export const getAllCases = async (page) => {
           as: "animal",
         },
       ],
+      offset,
+      limit,
     });
 
     return cases;

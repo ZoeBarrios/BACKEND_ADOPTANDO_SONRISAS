@@ -1,32 +1,18 @@
+import animalDTO from "../animals/animalDTO.js";
+import userDTO from "../users/userDTO.js";
 export default class adoptionDTO {
-  constructor({
-    animal_id,
-    adoption_date,
-    responsable_name,
-    responsable_phone,
-    responsable_address,
-  }) {
-    this.animal_id = animal_id;
+  constructor({ animal, person, adoption_date }) {
+    this.animal = animalDTO.toResponse(animal);
+    this.person = userDTO.toResponse(person);
     this.adoption_date = adoption_date;
-    this.responsable_name = responsable_name;
-    this.responsable_phone = responsable_phone;
-    this.responsable_address = responsable_address;
   }
 
   static toResponse(adoption) {
-    const {
-      animal_id,
-      adoption_date,
-      responsable_name,
-      responsable_phone,
-      responsable_address,
-    } = adoption;
+    const { animal, person, adoption_date } = adoption;
     return new adoptionDTO({
-      animal_id,
+      animal,
+      person,
       adoption_date,
-      responsable_name,
-      responsable_phone,
-      responsable_address,
     });
   }
 }

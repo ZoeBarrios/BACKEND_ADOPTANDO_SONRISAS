@@ -4,15 +4,10 @@ import Organization from "./organization.js";
 const Financial_Info = sequelize.define(
   "organization_financial_info",
   {
-    id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true,
-      autoIncrement: true,
-    },
     organization_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      primaryKey: true,
     },
     cbu: {
       type: DataTypes.STRING,

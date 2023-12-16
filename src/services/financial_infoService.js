@@ -13,7 +13,7 @@ export const getFinancial_infoByOganization = async (organization_id) => {
 
 export const updateFinancial_info = async (id, updateFinancial_infoDTO) => {
   const f_i = await Financial_Info.update(updateFinancial_infoDTO, {
-    where: { id },
+    where: { organization_id: id },
   });
   return f_i;
 };

@@ -1,6 +1,6 @@
 export default class animalsDTO {
-  constructor(id, name, sex, size, birthdate, img_url,organization) {
-    this.id = id;
+  constructor(animal_id, name, sex, size, birthdate, img_url, organization) {
+    this.animal_id = animal_id;
     this.name = name;
     this.sex = sex;
     this.size = size;
@@ -10,8 +10,17 @@ export default class animalsDTO {
   }
   static toResponse(animals) {
     let dtos = animals.map((animal) => {
-      const { id, name, sex, size, birthdate, img_url,organization } = animal;
-      return new animalsDTO(id, name, sex, size, birthdate, img_url,organization);
+      const { animal_id, name, sex, size, birthdate, img_url, organization } =
+        animal;
+      return new animalsDTO(
+        animal_id,
+        name,
+        sex,
+        size,
+        birthdate,
+        img_url,
+        organization
+      );
     });
     return dtos;
   }

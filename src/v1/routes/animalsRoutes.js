@@ -73,6 +73,13 @@ router.post("/", authMiddleware, singleUploAD, registerAnimal);
  *         required: false
  *         description: Número de página para la paginación
  *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         default: 12
+ *         required: false
+ *         description: Número de elementos por página
+ *       - in: query
  *         name: genre
  *         schema:
  *           type: string

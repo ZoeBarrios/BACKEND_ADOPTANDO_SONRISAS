@@ -3,13 +3,14 @@ import organizationDTO from "../DTOS/organizations/organizationDTO.js";
 import Organization from "../models/Organization.js";
 import {
   getActiveOrganizations,
+  getOrganizationsNotIn,
   getPendingOrganizations,
   updateIsAcceptedOrganization,
 } from "../services/organizationService.js";
 import {
   getTotalAdminsByOrganization,
   getTotalModeratorsByOrganization,
-} from "../services/users_organizationsService.js";
+} from "../services/person_organizationService.js";
 import { ERRORS } from "../utils/constants.js";
 
 export const acceptOrganization = async (req, res, next) => {
@@ -50,9 +51,11 @@ export const getAdminsByOrganization = async (req, res, next) => {
 export const getActive = async (req, res, next) => {
   try {
     const organizations = await getActiveOrganizations();
-    return res
-      .status(200)
-      .json(organizations.map((o) => organizationsDTO.toResponse(o)));
+
+    return res.success(
+      200,
+      organizations.map((o) => organizationsDTO.toResponse(o))
+    );
   } catch (error) {
     console.error(error);
     next(error);
@@ -103,6 +106,20 @@ export const updatOneOrganization = async (req, res, next) => {
     });
 
     return res.success(200, organizationDTO.toResponse(organization));
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
+
+export const getOrganizationsNotApllied = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const organizations = await getOrganizationsNotIn(id);
+    return res.success(
+      200,
+      organizations.map((o) => organizationsDTO.toResponse(o))
+    );
   } catch (error) {
     console.error(error);
     next(error);

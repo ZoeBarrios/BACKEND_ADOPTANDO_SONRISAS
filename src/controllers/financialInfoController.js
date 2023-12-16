@@ -10,7 +10,7 @@ export const registerFinancialInfo = async (req, res, next) => {
   try {
     const createDTO = creatFinancial_infoDTO.fromRequest(req);
     const financialInfo = await createFinancial_info(createDTO);
-    return res.succes(201, financialInfo);
+    return res.success(201, financialInfo);
   } catch (error) {
     next(error);
   }
@@ -20,7 +20,7 @@ export const getFinancialInfoByOrganization = async (req, res, next) => {
   try {
     const { organization_id } = req.params;
     const financialInfo = await getFinancial_infoByOganization(organization_id);
-    return res.succes(200, financialInfo);
+    return res.success(200, financialInfo);
   } catch (error) {
     next(error);
   }
@@ -31,7 +31,7 @@ export const updateFinancialInfo = async (req, res, next) => {
     const { id } = req.params;
     const updateDTO = updateFinancial_infoDTO.fromRequest(req);
     const financialInfo = await updateFinancial_info(id, updateDTO);
-    return res.succes(200, financialInfo);
+    return res.success(200, financialInfo);
   } catch (error) {
     next(error);
   }

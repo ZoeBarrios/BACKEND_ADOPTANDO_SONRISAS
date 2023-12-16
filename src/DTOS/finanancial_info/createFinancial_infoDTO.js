@@ -1,4 +1,4 @@
-import financialInfoScheme from "../../../validationSchemes/financial_infoScheme.js";
+import financialInfoScheme from "../../validationSchemes/financial_infoScheme.js";
 import { ERRORS } from "../../utils/constants.js";
 
 export default class creatFinancial_infoDTO {

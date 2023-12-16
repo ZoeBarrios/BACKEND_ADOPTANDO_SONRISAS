@@ -5,7 +5,7 @@ import { literal } from "sequelize";
 const Animal = sequelize.define(
   "animal",
   {
-    id: {
+    animal_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
@@ -68,4 +68,5 @@ Animal.belongsTo(Organization, {
   foreignKey: "organization_id",
   as: "organization",
 });
+
 export default Animal;
