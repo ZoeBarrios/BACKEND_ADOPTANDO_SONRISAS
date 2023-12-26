@@ -1,4 +1,4 @@
-import uploadImgs from "../utils/uploadImgs.js";
+import { uploadImgs, deleteImage } from "../utils/functionImgs.js";
 
 export const uploadSingleImage = async (file) => {
   try {
@@ -14,6 +14,17 @@ export const uploadMultipleImages = async (files) => {
     const imgUrls = await Promise.all(files.map((file) => uploadImgs(file)));
 
     return imgUrls;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteImages = async (urls) => {
+  try {
+    const deletePromises = await Promise.all(
+      urls.map(({ dataValues }) => deleteImage(dataValues.img_url))
+    );
+    return deletePromises;
   } catch (error) {
     throw error;
   }

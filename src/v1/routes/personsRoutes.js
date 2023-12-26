@@ -2,11 +2,14 @@ import express from "express";
 import {
   deletePersonFromOrganization,
   getApplysByPersonId,
+  getPersons_OrganizationsByOrganization,
   getUser,
   joinPersonToOrganization,
   registerUser,
   updateOneUser,
 } from "../../controllers/personController.js";
+import checkRoles from "../../middlewares/checkRolesMiddleware.js";
+import { ROLES } from "../../utils/constants.js";
 const router = express.Router();
 /**
  * @swagger
@@ -60,10 +63,12 @@ const router = express.Router();
  *         description: Usuario no encontrado
  *       401:
  *         description: No autorizado
+ *       403:
+ *         description: No permitido
  *
  */
 
-router.post("/", registerUser);
+router.post("/", checkRoles([ROLES.SUPERADMIN, ROLES.ADMIN]), registerUser);
 
 /**
  * @swagger
@@ -223,5 +228,28 @@ router.get("/apply/:id", getApplysByPersonId);
  */
 
 router.delete("/apply", deletePersonFromOrganization);
+
+/**
+ * @swagger
+ * /api/persons/organization/{id}:
+ *   get:
+ *     summary: Obtiene los usuarios de una organización
+ *     tags: [Persons]
+ *     description: Obtiene los usuarios de una organización
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: id de la organización
+ *     responses:
+ *       200:
+ *         description: Respuesta exitosa
+ *       400:
+ *         description: Error en la petición
+ */
+
+router.get("/organization/:id", getPersons_OrganizationsByOrganization);
 
 export default router;

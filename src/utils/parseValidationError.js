@@ -1,4 +1,4 @@
-import { ERRORS } from "../utils/constants.js";
+import { ERRORS } from "../utils/errors.js";
 export default function parseValidationError(error) {
   const errorMessages = error.details.map((err) => {
     if (err.type === "any.required") {

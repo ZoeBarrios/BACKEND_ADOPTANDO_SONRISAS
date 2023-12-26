@@ -2,13 +2,15 @@ import express from "express";
 import {
   deleteAnimalById,
   getFiltered,
-  getAllAdmin,
   getById,
   registerAnimal,
   update,
+  getAnimalByOrganizationId,
 } from "../../controllers/animalsController.js";
 import authMiddleware from "../../middlewares/auth.js";
+import checkRoles from "../../middlewares/checkRolesMiddleware.js";
 import multer from "multer";
+import { ROLES } from "../../utils/constants.js";
 const router = express.Router();
 export const singleUploAD = multer().single("image");
 
@@ -16,7 +18,7 @@ export const singleUploAD = multer().single("image");
  * @swagger
  * /api/animals:
  *   post:
- *     summary: registrar animal
+ *     summary: Registrar animal
  *     tags: [Animals]
  *     description: registrar animal en la base de datos
  *     requestBody:
@@ -53,9 +55,21 @@ export const singleUploAD = multer().single("image");
  *         description: Respuesta exitosa
  *       400:
  *         description: Error en la petición
+ *       401:
+ *         description: No autorizado
+ *       403:
+ *         description: No tiene permisos
  */
 
-router.post("/", authMiddleware, singleUploAD, registerAnimal);
+router.post(
+  "/",
+
+  authMiddleware,
+  checkRoles([ROLES.ADMIN, ROLES.MODERATOR]),
+  singleUploAD,
+  registerAnimal
+);
+
 /**
  * @swagger
  * /api/animals:
@@ -125,30 +139,31 @@ router.get("/", getFiltered);
  */
 
 router.get("/animal/:id", getById);
+
 /**
  * @swagger
- * /api/animals/admin/{page}:
+ * /api/animals/organization/{id}:
  *   get:
- *     summary: Obtener todos los animales para el admin
+ *     summary: Obtener todos los animales de una organización
  *     tags: [Animals]
- *     description: Obtener todos los animales para el admin de la base de datos
+ *     description: Obtener todos los animales de una organización de la base de datos
  *     parameters:
  *       - in: path
- *         name: page
- *         default: 1
+ *         name: id
  *         schema:
  *           type: integer
  *         required: false
- *         description: Número de página para la paginación
+ *         description: id de la organización
  *     responses:
  *       200:
  *         description: Respuesta exitosa
  *       400:
  *         description: Error en la petición
- *     security: []
+ *       401:
+ *         description: No autorizado
  */
 
-router.get("/admin/:page", authMiddleware, getAllAdmin);
+router.get("/organization/:id", authMiddleware, getAnimalByOrganizationId);
 
 /**
  * @swagger
@@ -171,14 +186,22 @@ router.get("/admin/:page", authMiddleware, getAllAdmin);
  *         description: Error en la petición
  *       401:
  *         description: No autorizado
+ *       403:
+ *         description: No tiene permisos
  */
 
-router.delete("/:id", authMiddleware, deleteAnimalById);
+router.delete(
+  "/:id",
+
+  authMiddleware,
+  checkRoles([ROLES.ADMIN, ROLES.MODERATOR]),
+  deleteAnimalById
+);
 /**
  * @swagger
  * /api/animals/{id}:
  *   put:
- *     summary: actualizar animal
+ *     summary: Actualizar animal
  *     tags: [Animals]
  *     description: actualizar animal en la base de datos
  *     requestBody:
@@ -204,6 +227,13 @@ router.delete("/:id", authMiddleware, deleteAnimalById);
  *       400:
  *         description: Error en la petición
  */
-router.put("/:id", authMiddleware, singleUploAD, update);
+router.put(
+  "/:id",
+
+  authMiddleware,
+  checkRoles([ROLES.ADMIN, ROLES.MODERATOR]),
+  singleUploAD,
+  update
+);
 
 export default router;

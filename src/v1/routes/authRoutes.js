@@ -1,5 +1,9 @@
 import express from "express";
-import { login, register } from "../../controllers/authController.js";
+import {
+  login,
+  register,
+  verifyTokenResetPassword,
+} from "../../controllers/authController.js";
 import { registerUser } from "../../controllers/personController.js";
 
 const router = express.Router();
@@ -18,7 +22,7 @@ const router = express.Router();
  *           schema:
  *             type: object
  *             properties:
- *               name:
+ *               nameOrEmail:
  *                 type: string
  *                 description: nombre del usuario
  *               password:
@@ -124,5 +128,39 @@ router.post("/register/organization", register);
  */
 
 router.post("/register", registerUser);
+
+/**
+ * @swagger
+ * /api/auth/new-password/{token}:
+ *   put:
+ *     summary: Verificar si el token es válido
+ *     tags: [Auth]
+ *     parameters:
+ *       - in: path
+ *         name: token
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Token de verificación
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               password:
+ *                 type: string
+ *                 description: Contraseña para restablecer
+ *                 required: true
+ *     responses:
+ *       200:
+ *         description: Token válido
+ *       400:
+ *         description: Token inválido
+ *     security: []
+ */
+
+router.put("/new-password/:token", verifyTokenResetPassword);
 
 export default router;

@@ -1,6 +1,6 @@
 import personScheme from "../../validationSchemes/personScheme.js";
 import parseValidationError from "../../utils/parseValidationError.js";
-export default class CreateUserDTO {
+export default class createPersonDTO {
   constructor(name, surname, email, password, organization_id, phone) {
     this.name = name;
     this.surname = surname;
@@ -17,7 +17,7 @@ export default class CreateUserDTO {
       parseValidationError(error);
     }
 
-    return new CreateUserDTO(
+    return new createPersonDTO(
       value.name,
       value.surname,
       value.email,

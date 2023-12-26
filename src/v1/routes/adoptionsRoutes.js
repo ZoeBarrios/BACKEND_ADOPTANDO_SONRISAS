@@ -2,13 +2,13 @@ import express from "express";
 const router = express.Router();
 import {
   registerAdoption,
-  getAllAdoptions,
-  getOneAdoption,
   getAdoptionsByUserId,
   getAdoptionsByOrganizationId,
   accept,
   cancel,
 } from "../../controllers/adoptionsController.js";
+import checkRoles from "../../middlewares/checkRolesMiddleware.js";
+import { ROLES } from "../../utils/constants.js";
 
 /**
  * @swagger
@@ -40,9 +40,12 @@ import {
  *         description: Error en la petición
  *       401:
  *         description: No autorizado
+ *       403:
+ *         description: No tiene permisos
+ *
  */
 
-router.post("/", registerAdoption);
+router.post("/", checkRoles([ROLES.USER]), registerAdoption);
 
 /**
  * @swagger
@@ -61,37 +64,17 @@ router.post("/", registerAdoption);
  *     responses:
  *       200:
  *         description: Respuesta exitosa
+ *       401:
+ *         description: No autorizado
+ *       403:
+ *         description: No tiene permisos
  */
 
-router.get("/organization/:organizationId", getAdoptionsByOrganizationId);
-
-/**
- * @swagger
- * /api/adoptions/one/{userId}/{animalId}:
- *   get:
- *     summary: Obtener una adopción
- *     tags:
- *       - Adoptions
- *     description: Obtener una adopción de la base de datos
- *     parameters:
- *       - in: path
- *         name: userId
- *         required: true
- *         schema:
- *           type: integer
- *       - in: path
- *         name: animalId
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Respuesta exitosa
- *       400:
- *         description: Error en la petición
- */
-
-router.get("/one/:organizationId/:animalId", getOneAdoption);
+router.get(
+  "/organization/:organizationId",
+  checkRoles([ROLES.ADMIN, ROLES.MODERATOR]),
+  getAdoptionsByOrganizationId
+);
 
 /**
  * @swagger
@@ -112,26 +95,28 @@ router.get("/one/:organizationId/:animalId", getOneAdoption);
  *         description: Respuesta exitosa
  *       400:
  *         description: Error en la petición
+ *       401:
+ *         description: No autorizado
  */
 
 router.get("/person/:personId", getAdoptionsByUserId);
 
 /**
  * @swagger
- * /api/adoptions/accept/{userId}/{animalId}
+ * /api/adoptions/accept:
  *   put:
  *     summary: Aceptar una adopción
  *     tags:
  *       - Adoptions
  *     description: Aceptar una adopción de la base de datos
  *     parameters:
- *       - in: path
- *         name: userId
+ *       - in: query
+ *         name: person_id
  *         required: true
  *         schema:
  *           type: integer
  *       - in: path
- *         name: animalId
+ *         name: animal_id
  *         required: true
  *         schema:
  *           type: integer
@@ -140,9 +125,13 @@ router.get("/person/:personId", getAdoptionsByUserId);
  *         description: Respuesta exitosa
  *       400:
  *         description: Error en la petición
+ *       401:
+ *         description: No autorizado
+ *       403:
+ *         description: No tiene permisos
  */
 
-router.put("/accept/:userId/:animalId", accept);
+router.put("/accept", checkRoles([ROLES.ADMIN, ROLES.MODERATOR]), accept);
 
 /**
  * @swagger
@@ -168,14 +157,13 @@ router.put("/accept/:userId/:animalId", accept);
  *             required:
  *               - animal_id
  *               - person_id
- *           example:
- *             animal_id: 123
- *             person_id: 456
  *     responses:
  *       200:
  *         description: Respuesta exitosa
  *       400:
  *         description: Error en la petición
+ *       401:
+ *         description: No autorizado
  */
 
 router.put("/cancel", cancel);

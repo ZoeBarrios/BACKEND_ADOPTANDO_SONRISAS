@@ -1,5 +1,7 @@
 import Case from "../models/cases.js";
 import Animal from "../models/animal.js";
+import { deleteImages } from "./imgService.js";
+import { getByCaseId } from "./case_imgsService.js";
 
 export const createCase = async (createCaseDTO) => {
   try {
@@ -16,6 +18,9 @@ export const getAllCases = async (page = 1, limit = 10) => {
   const offset = (page - 1) * limit;
   try {
     const cases = await Case.findAll({
+      where: {
+        isDeleted: false,
+      },
       include: [
         {
           model: Animal,
@@ -51,10 +56,51 @@ export const getCaseById = async (id) => {
 
 export const updateCase = async (id, updateCaseDTO) => {
   try {
-    const case_ = await Case.findByPk(id);
+    const case_ = await Case.findByPk(id, {
+      include: [
+        {
+          model: Animal,
+          as: "animal",
+        },
+      ],
+    });
     if (!case_) return null;
     const updatedCase = await case_.update(updateCaseDTO);
     return updatedCase;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getCasesByOrganization = async (organization_id) => {
+  try {
+    const cases = await Case.findAll({
+      include: [
+        {
+          model: Animal,
+          as: "animal",
+          where: {
+            organization_id,
+          },
+        },
+      ],
+    });
+    return cases;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteByCaseId = async (id) => {
+  try {
+    const case_ = await Case.findByPk(id);
+    if (!case_) return null;
+    const deletedCase = await case_.update({ isDeleted: true });
+    const imgs = await getByCaseId(id);
+
+    if (!imgs) return deletedCase;
+    await deleteImages(imgs);
+    return deletedCase;
   } catch (error) {
     throw error;
   }

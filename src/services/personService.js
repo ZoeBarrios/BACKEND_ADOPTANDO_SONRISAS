@@ -1,9 +1,12 @@
 import Person from "../models/person.js";
 import Role from "../models/role.js";
 import { createPersons_Organizationss } from "./person_organizationService.js";
-import { ACTIVITIES, ERRORS, ROLES } from "../utils/constants.js";
+import { ACTIVITIES, ROLES } from "../utils/constants.js";
 import { hash } from "./bcryptService.js";
-import { sequelize } from "../config/db.js";
+import Activity from "../models/activity.js";
+import { ERRORS } from "../utils/errors.js";
+import { send } from "./emailService.js";
+import { appConfig } from "../config/config.js";
 
 export const getByEmail = async (email) => {
   try {
@@ -64,32 +67,30 @@ export const getById = async (id) => {
 };
 
 export const createUser = async (person, role) => {
-  let transaction;
-
   try {
-    transaction = await sequelize.transaction();
-
     const roleFound = await Role.findOne({
       where: { role_name: role },
-      transaction,
     });
 
     if (!roleFound) {
       throw new Error(ERRORS.WrongRole);
     }
 
-    person.role_id = roleFound.role_id;
-    person.password = await hash(person.password);
-    const newUser = await Person.create(person, { transaction });
+    const role_id = roleFound.role_id;
+    const hashedPassword = await hash(person.password);
 
-    if (role == ROLES.USER) {
-      await transaction.commit();
+    const newUser = await Person.create({
+      ...person,
+      role_id,
+      password: hashedPassword,
+    });
+
+    if (role === ROLES.USER) {
       return newUser;
     }
 
     const activityFound = await Activity.findOne({
       where: { activity_name: ACTIVITIES.Management },
-      transaction,
     });
 
     if (!activityFound) {
@@ -100,16 +101,21 @@ export const createUser = async (person, role) => {
       person_id: newUser.person_id,
       organization_id: person.organization_id,
       activity_id: activityFound.activity_id,
-      transaction,
     });
 
-    await transaction.commit();
+    //MANDO UN CORREO AL USUARIO CON SUS CREDENCIALES DE ACCESO
+    await send(
+      {
+        to: person.email,
+        subject: "Bienvenido a Adoptando Sonrisas",
+        text: `Hola ${person.name}, bienvenido a Adoptando Sonrisas, tu usuario es: ${person.email} y tu contraseña es: ${person.password}. Asegurate de cambiar tu contraseña en cuanto inicies sesión.`,
+      },
+      appConfig.email
+    );
+
     return newUser;
   } catch (error) {
     console.error(error.message);
-    if (transaction) {
-      await transaction.rollback();
-    }
     throw error;
   }
 };
@@ -118,7 +124,7 @@ export const updateUser = async (person, person_id) => {
   try {
     const userFound = await Person.findByPk(person_id);
     if (!userFound) {
-      throw new Error(ERRORS.UserNotFound);
+      return null;
     }
 
     await userFound.update(person);
@@ -131,8 +137,7 @@ export const updateUser = async (person, person_id) => {
 
 export const newPassword = async (person, password) => {
   try {
-    person.password = await hash(password);
-    await person.save();
+    await person.update({ password: await hash(password) });
     return true;
   } catch (error) {
     console.error(error.message);

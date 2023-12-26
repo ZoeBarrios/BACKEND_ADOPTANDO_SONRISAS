@@ -26,7 +26,7 @@ export const getPersonOrganization = async (personId, organizationId) => {
   }
 };
 
-export const getPersons_OrganizationsByUserId = async (person_id) => {
+export const getPersons_OrganizationsByPersonId = async (person_id) => {
   try {
     return await Persons_Organizations.findAll({
       where: { person_id: person_id, isActive: true },
@@ -41,13 +41,17 @@ export const getPersons_OrganizationsByUserId = async (person_id) => {
     throw error;
   }
 };
+
+//PARA OBTENER VOLUNTARIOS
+
 export const getPersons_OrganizationsByOrganizationId = async (
   organizationId
 ) => {
   try {
+    const role = await Role.findOne({ where: { role_name: ROLES.USER } });
     return await Persons_Organizations.findAll({
       where: { organization_id: organizationId },
-      include: [{ model: Person, where: { role_id: ROLES.USER } }],
+      include: [{ model: Person, where: { role_id: role.role_id } }],
     });
   } catch (error) {
     throw error;
@@ -74,21 +78,19 @@ export const getTotalModeratorsByOrganization = async (organizationId) => {
       where: {
         organization_id: organizationId,
       },
-      include: [{ model: Person, where: { role_id: role.id } }],
+      include: [{ model: Person, where: { role_id: role.role_id } }],
     });
   } catch (error) {
     throw error;
   }
 };
 
-export const updatePersons_Organizations = async (Persons_Organizationss) => {
+export const updatePersons_Organizations = async (
+  person_organization,
+  data
+) => {
   try {
-    return await Persons_Organizations.update(Persons_Organizationss, {
-      where: {
-        person_id: Persons_Organizationss.person_id,
-        organization_id: Persons_Organizationss.organization_id,
-      },
-    });
+    return await person_organization.update(data);
   } catch (error) {
     throw error;
   }

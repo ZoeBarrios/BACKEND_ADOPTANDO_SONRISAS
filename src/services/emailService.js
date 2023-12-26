@@ -1,7 +1,7 @@
 import { transporter } from "../config/config.js";
-export const send = async (objToSend, emailTo) => {
+export const send = async (objToSend, emailFrom) => {
   const mailOptions = {
-    from: emailTo,
+    from: emailFrom,
     to: objToSend.to,
     subject: objToSend.subject,
     text: objToSend.text,

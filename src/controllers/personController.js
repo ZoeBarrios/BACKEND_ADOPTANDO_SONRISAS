@@ -1,27 +1,31 @@
-import userDTO from "../DTOS/users/userDTO.js";
-import createUserDTO from "../DTOS/users/createUserDTO.js";
+import personDTO from "../DTOS/persons/personDTO.js";
+import createPersonDTO from "../DTOS/persons/createPersonDTO.js";
+import personOrganizationDTO from "../DTOS/organizations/personOrganizationDTO.js";
 import {
   createUser,
   getByEmail,
   getById,
   getByUsername,
+  updateUser,
 } from "../services/personService.js";
-
-import { ERRORS } from "../utils/constants.js";
-import CreatePersonOrganization from "../DTOS/users/createPersonOrganization.js";
+import { ERRORS } from "../utils/errors.js";
+import CreatePersonOrganization from "../DTOS/persons/createPersonOrganization.js";
 import {
   createPersons_Organizationss,
   deletePersons_Organizations,
   getPersonOrganization,
-  getPersons_OrganizationsByUserId,
+  getPersons_OrganizationsByOrganizationId,
+  getPersons_OrganizationsByPersonId,
   updatePersons_Organizations,
 } from "../services/person_organizationService.js";
+import IdScheme from "../validationSchemes/idScheme.js";
+import parseValidationError from "../utils/parseValidationError.js";
 
 export const registerUser = async (req, res, next) => {
   const { role } = req.query;
 
   try {
-    const newUser = createUserDTO.fromRequest(req);
+    const newUser = createPersonDTO.fromRequest(req);
     const userUsername = await getByUsername(newUser.name);
     const userEmail = await getByEmail(newUser.email);
     if (userUsername || userEmail) {
@@ -34,7 +38,8 @@ export const registerUser = async (req, res, next) => {
     } else {
       return next(ERRORS.WrongRole);
     }
-    return res.success(201, userDTO.toResponse(userCreated));
+
+    return res.success(201, personDTO.toResponse(userCreated));
   } catch (error) {
     return next(error);
   }
@@ -43,12 +48,15 @@ export const registerUser = async (req, res, next) => {
 export const getUser = async (req, res, next) => {
   try {
     const { id } = req.params;
-
+    const { error, value } = IdScheme.validate({ id });
+    if (error) {
+      parseValidationError(error);
+    }
     const person = await getById(id);
     if (!person) {
       return next(ERRORS.UserNotFound);
     }
-    return res.success(200, userDTO.toResponse(person));
+    return res.success(200, personDTO.toResponse(person));
   } catch (error) {
     next(error);
   }
@@ -56,13 +64,16 @@ export const getUser = async (req, res, next) => {
 
 export const updateOneUser = async (req, res, next) => {
   const { id } = req.params;
+  const { error, value } = IdScheme.validate({ id });
+  if (error) {
+    parseValidationError(error);
+  }
   try {
-    const person = await getById(id);
-    if (!person) {
+    const userUpdated = await updateUser(req.body, id);
+    if (!userUpdated) {
       return next(ERRORS.UserNotFound);
     }
-    const userUpdated = await person.update(req.body);
-    return res.success(200, userDTO.toResponse(userUpdated));
+    return res.success(200, personDTO.toResponse(userUpdated));
   } catch (error) {
     next(error);
   }
@@ -75,10 +86,11 @@ export const joinPersonToOrganization = async (req, res, next) => {
       req.body.organization_id
     );
     if (alreadyExists) {
-      await alreadyExists.update({
+      await updatePersons_Organizations(alreadyExists, {
         isActive: true,
         activity_id: req.body.activity_id,
       });
+
       return res.success(200, alreadyExists);
     }
 
@@ -102,7 +114,7 @@ export const updateActivityFromApply = async (req, res, next) => {
     if (!personOrganization) {
       return next(ERRORS.NotFound);
     }
-    await personOrganization.update({ activity_id });
+    await updatePersons_Organizations(personOrganization, activity_id);
 
     return res.success(200, personOrganization);
   } catch (error) {
@@ -131,11 +143,40 @@ export const deletePersonFromOrganization = async (req, res, next) => {
 export const getApplysByPersonId = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const apply = await getPersons_OrganizationsByUserId(id);
+    const { error, value } = IdScheme.validate({ id });
+    if (error) {
+      parseValidationError(error);
+    }
+    const apply = await getPersons_OrganizationsByPersonId(id);
     if (!apply) {
       return next(ERRORS.NotFound);
     }
     return res.success(200, apply);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getPersons_OrganizationsByOrganization = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const { id } = req.params;
+    const { error, value } = IdScheme.validate({ id });
+    if (error) {
+      parseValidationError(error);
+    }
+    const apply = await getPersons_OrganizationsByOrganizationId(id);
+    if (!apply) {
+      return next(ERRORS.NotFound);
+    }
+    console.log(apply);
+    return res.success(
+      200,
+      apply.map((a) => personOrganizationDTO.toResponse(a))
+    );
   } catch (error) {
     next(error);
   }

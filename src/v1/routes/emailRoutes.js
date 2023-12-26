@@ -1,7 +1,6 @@
 import express from "express";
 import {
   forgotPassword,
-  resetPassword,
   sendEmail,
 } from "../../controllers/emailController.js";
 
@@ -47,7 +46,7 @@ router.post("/send/:id", sendEmail);
 
 /**
  * @swagger
- * /api/email/forgot_password:
+ * /api/email/change-password:
  *   post:
  *     summary: Enviar un email para recuperar la contraseña
  *     tags: [Email]
@@ -66,30 +65,9 @@ router.post("/send/:id", sendEmail);
  *         description: Email enviado exitosamente
  *       400:
  *         description: Error al enviar el email
+ *     security: []
  */
 
-router.post("/forgot_password", forgotPassword);
-
-/**
- * @swagger
- * /api/email/reset_password/{token}:
- *   get:
- *     summary: Verificar si el token es válido
- *     tags: [Email]
- *     parameters:
- *       - in: path
- *         name: token
- *         schema:
- *           type: string
- *         required: true
- *         description: Token de verificación
- *     responses:
- *       200:
- *         description: Token válido
- *       400:
- *         description: Token inválido
- */
-
-router.get("/reset_password/:token", resetPassword);
+router.post("/change-password", forgotPassword);
 
 export default router;

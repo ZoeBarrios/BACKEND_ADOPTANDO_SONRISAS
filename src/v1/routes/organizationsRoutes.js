@@ -1,15 +1,20 @@
 import express from "express";
 import {
   acceptOrganization,
+  deleteOrganization,
+  deletePersonFromOrganization,
   getActive,
   getAdminsByOrganization,
   getModeratorsByOrganization,
   getOrganization,
+  getOrganizationByPerson,
   getOrganizationsNotApllied,
   getPending,
   updatOneOrganization,
 } from "../../controllers/organizationsController.js";
 import authMiddleware from "../../middlewares/auth.js";
+import checkRoles from "../../middlewares/checkRolesMiddleware.js";
+import { ROLES } from "../../utils/constants.js";
 const router = express.Router();
 
 /**
@@ -31,9 +36,18 @@ const router = express.Router();
  *         description: Respuesta exitosa
  *       400:
  *         description: Error en la petición
+ *       401:
+ *         description: No autorizado
+ *       403:
+ *         description: No tiene permisos para realizar esta acción
  */
 
-router.put("/accept/:id", authMiddleware, acceptOrganization);
+router.put(
+  "/accept/:id",
+  authMiddleware,
+  checkRoles([ROLES.SUPERADMIN]),
+  acceptOrganization
+);
 
 /**
  * @swagger
@@ -53,9 +67,18 @@ router.put("/accept/:id", authMiddleware, acceptOrganization);
  *         description: Respuesta exitosa
  *       400:
  *         description: Error en la petición
+ *       401:
+ *         description: No autorizado
+ *       403:
+ *         description: No tiene permisos para realizar esta acción
  */
 
-router.get("/admins/:organization_id", authMiddleware, getAdminsByOrganization);
+router.get(
+  "/admins/:organization_id",
+  authMiddleware,
+  checkRoles([ROLES.SUPERADMIN]),
+  getAdminsByOrganization
+);
 
 /**
  * @swagger
@@ -75,10 +98,15 @@ router.get("/admins/:organization_id", authMiddleware, getAdminsByOrganization);
  *         description: Respuesta exitosa
  *       400:
  *         description: Error en la petición
+ *       401:
+ *         description: No autorizado
+ *       403:
+ *         description: No tiene permisos para realizar esta acción
  */
 router.get(
   "/moderators/:organization_id",
   authMiddleware,
+  checkRoles([ROLES.ADMIN, ROLES.SUPERADMIN]),
   getModeratorsByOrganization
 );
 
@@ -94,8 +122,17 @@ router.get(
  *         description: Respuesta exitosa
  *       400:
  *         description: Error en la petición
+ *       401:
+ *         description: No autorizado
+ *       403:
+ *         description: No tiene permisos para realizar esta acción
  */
-router.get("/pending", authMiddleware, getPending);
+router.get(
+  "/pending",
+  authMiddleware,
+  checkRoles([ROLES.SUPERADMIN]),
+  getPending
+);
 
 /**
  * @swagger
@@ -136,7 +173,7 @@ router.get("/active", getActive);
  *     security: []
  */
 
-router.get("/active/user/:id", getOrganizationsNotApllied);
+router.get("/active/user/:id", authMiddleware, getOrganizationsNotApllied);
 
 /**
  * @swagger
@@ -160,6 +197,8 @@ router.get("/active/user/:id", getOrganizationsNotApllied);
  *             properties:
  *               description:
  *                 type: string
+ *               email:
+ *                 type: string
  *               phone:
  *                 type: string
  *               instagram_link:
@@ -171,8 +210,17 @@ router.get("/active/user/:id", getOrganizationsNotApllied);
  *         description: Respuesta exitosa
  *       400:
  *         description: Error en la petición
+ *       401:
+ *         description: No autorizado
+ *       403:
+ *         description: No tiene permisos para realizar esta acción
  */
-router.put("/:id", authMiddleware, updatOneOrganization);
+router.put(
+  "/:id",
+  authMiddleware,
+  checkRoles([ROLES.ADMIN, ROLES.SUPERADMIN]),
+  updatOneOrganization
+);
 
 /**
  * @swagger
@@ -198,4 +246,94 @@ router.put("/:id", authMiddleware, updatOneOrganization);
 
 router.get("/:id", getOrganization);
 
+/**
+ * @swagger
+ * /api/organizations/person/{id}:
+ *   get:
+ *     summary: Obtener organización de una persona moderador o admin
+ *     tags: [Organizations]
+ *     description: Obtener organización de una persona moderador o admin
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID de la persona
+ *     responses:
+ *       200:
+ *         description: Respuesta exitosa
+ *       400:
+ *         description: Error en la petición
+ */
+
+router.get(
+  "/person/:id",
+  authMiddleware,
+  checkRoles([ROLES.MODERATOR, ROLES.ADMIN, ROLES.SUPERADMIN]),
+  getOrganizationByPerson
+);
+
+/**
+ * @swagger
+ * /api/organizations:
+ *   delete:
+ *     summary: Eliminar una persona de una organización
+ *     tags: [Organizations]
+ *     description: Eliminar una persona de una organización
+ *     parameters:
+ *       - in: query
+ *         name: organization_id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID de la organización
+ *       - in: query
+ *         name: person_id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID de la persona
+ *     responses:
+ *       204:
+ *         description: Respuesta exitosa
+ *       400:
+ *         description: Error en la petición
+ *       401:
+ *         description: No autorizado
+ */
+
+router.delete("/", authMiddleware, deletePersonFromOrganization);
+
+/**
+ * @swagger
+ * /api/organizations/{id}:
+ *   delete:
+ *     summary: Eliminar una organización
+ *     tags: [Organizations]
+ *     description: Eliminar una organización
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID de la organización
+ *     responses:
+ *       204:
+ *         description: Respuesta exitosa
+ *       400:
+ *         description: Error en la petición
+ *       401:
+ *         description: No autorizado
+ *       403:
+ *         description: No tiene permisos para realizar esta acción
+ */
+
+router.delete(
+  "/:id",
+  authMiddleware,
+  checkRoles([ROLES.SUPERADMIN]),
+  deleteOrganization
+);
 export default router;

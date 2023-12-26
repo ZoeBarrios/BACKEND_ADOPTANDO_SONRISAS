@@ -2,14 +2,14 @@ import adoptionDTO from "../DTOS/adoptions/adoptionDTO.js";
 import createAdoptionDTO from "../DTOS/adoptions/createAdoptionDTO.js";
 import adoptionsDTO from "../DTOS/adoptions/adoptionsDTO.js";
 import {
+  acceptAdoption,
   createAdoption,
   getAdoption,
-  getAdoptions,
-  getAllADoptionByOrganizationId,
+  getAllAdoptionByOrganizationId,
   getAllAdoptionsByUserId,
 } from "../services/adoptionsService.js";
 import { setAnimalAdopted } from "../services/animalsService.js";
-import { ERRORS } from "../utils/constants.js";
+import { ERRORS } from "../utils/errors.js";
 
 export const registerAdoption = async (req, res, next) => {
   try {
@@ -29,19 +29,6 @@ export const registerAdoption = async (req, res, next) => {
     );
 
     res.success(201, adoptionDTO.toResponse(adoptionToReturn));
-  } catch (err) {
-    next(err);
-  }
-};
-
-export const getAllAdoptions = async (req, res, next) => {
-  const { organizationId } = req.params;
-  try {
-    const adoptions = await getAdoptions(organizationId);
-    return res.success(
-      200,
-      adoptions.map((adoption) => adoptionsDTO.toResponse(adoption))
-    );
   } catch (err) {
     next(err);
   }
@@ -74,7 +61,7 @@ export const getAdoptionsByUserId = async (req, res, next) => {
 export const getAdoptionsByOrganizationId = async (req, res, next) => {
   try {
     const { organizationId } = req.params;
-    const adoptions = await getAllADoptionByOrganizationId(organizationId);
+    const adoptions = await getAllAdoptionByOrganizationId(organizationId);
     return res.success(
       200,
       adoptions.map((adoption) => adoptionsDTO.toResponse(adoption))
@@ -86,11 +73,9 @@ export const getAdoptionsByOrganizationId = async (req, res, next) => {
 
 export const accept = async (req, res, next) => {
   try {
-    const { userId, animalId } = req.params;
-    const adoption = await getAdoption(animalId, userId);
-    adoption.isAccepted = true;
-    await adoption.save();
-    await setAnimalAdopted(animalId);
+    const { person_id, animal_id } = req.body;
+    const adoption = await acceptAdoption(animal_id, person_id);
+    await setAnimalAdopted(animal_id);
     return res.success(200, adoptionDTO.toResponse(adoption));
   } catch (err) {
     next(err);

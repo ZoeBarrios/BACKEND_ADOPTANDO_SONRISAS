@@ -10,6 +10,7 @@ import activities from "./src/v1/routes/activitiesRoutes.js";
 import cases from "./src/v1/routes/casesRoutes.js";
 import organizations from "./src/v1/routes/organizationsRoutes.js";
 import financial_info from "./src/v1/routes/financialInfoRoutes.js";
+import ratings from "./src/v1/routes/ratingRoutes.js";
 import email from "./src/v1/routes/emailRoutes.js";
 import { responseHandler } from "./src/middlewares/responseHandler.js";
 import { connectionToDatabase } from "./src/config/db.js";
@@ -39,6 +40,7 @@ app.use("/api/organizations", organizations);
 app.use("/api/email", email);
 app.use("/api/financialInfo", financial_info);
 app.use("/api/activities", activities);
+app.use("/api/ratings", authMiddleware, ratings);
 app.use((req, res) => {
   res.status(404).send("Ruta no encontrada");
 });

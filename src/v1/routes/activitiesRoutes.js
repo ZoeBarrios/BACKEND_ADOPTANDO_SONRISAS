@@ -15,10 +15,7 @@ const router = Router();
  *     responses:
  *       200:
  *         description: Respuesta exitosa
- *       404:
- *         description: Actividades no encontradas
- *       401:
- *         description: No autorizado
+ *     security: []
  */
 
 router.get("/", getAllActivities);
@@ -42,8 +39,7 @@ router.get("/", getAllActivities);
  *         description: Respuesta exitosa
  *       404:
  *         description: Actividad no encontrada
- *       401:
- *         description: No autorizado
+ *     security: []
  */
 
 router.get("/:id", getActivity);

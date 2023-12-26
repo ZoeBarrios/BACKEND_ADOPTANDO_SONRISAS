@@ -1,5 +1,5 @@
 import organizationSchema from "../../validationSchemes/organizarionScheme.js";
-import { ERRORS } from "../../utils/constants.js";
+import { ERRORS } from "../../utils/errors.js";
 import parseValidationError from "../../utils/parseValidationError.js";
 
 export default class createOrganizationDTO {

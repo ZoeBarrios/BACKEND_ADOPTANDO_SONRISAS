@@ -2,20 +2,26 @@ import Animal from "../models/animal.js";
 import { Op } from "sequelize";
 import Organization from "../models/organization.js";
 import { AGE } from "../utils/constants.js";
+import { cancelAllAdoptionsByAnimal } from "./adoptionsService.js";
 
 export const createAnimal = async (animal) => {
   const animalCreated = await Animal.create(animal);
   return animalCreated;
 };
 
-export const getAnimalsByOrganization = async (organizationId, page) => {
+export const getAnimalsByOrganization = async (organizationId) => {
   try {
     const animals = await Animal.findAll({
       where: {
         organization_id: organizationId,
       },
-      offset: page,
-      limit: 12,
+      include: [
+        {
+          model: Organization,
+          as: "organization",
+          attributes: ["name"],
+        },
+      ],
     });
     return animals;
   } catch (error) {
@@ -136,31 +142,6 @@ export const getFilteredAnimal = async (
   }
 };
 
-export const getAllAnimalAdmin = async (page) => {
-  const limit = 12;
-  const offset = limit * (page - 1);
-
-  try {
-    const animals = await Animal.findAll({
-      offset,
-      limit,
-      where: {
-        eliminated: false,
-      },
-      include: [
-        {
-          model: Organization,
-          as: "organization",
-          attributes: ["name"],
-        },
-      ],
-    });
-    return animals;
-  } catch (error) {
-    throw error;
-  }
-};
-
 export const setAnimalAdopted = async (id) => {
   try {
     const animal = await Animal.findByPk(id);
@@ -175,18 +156,18 @@ export const deleteAnimal = async (id) => {
   try {
     const animal = await Animal.findByPk(id);
     if (!animal) throw new Error(`No existe el animal con id ${id}`);
-    animal.eliminated = true;
-    await animal.save();
+    await updateAnimal(id, { eliminated: true });
+    await cancelAllAdoptionsByAnimal(id);
   } catch (error) {
     throw error;
   }
 };
 
-export const updateAnimal = async (id, animal) => {
+export const updateAnimal = async (animal_id, animal) => {
   try {
     const animalUpdated = await Animal.update(animal, {
       where: {
-        id,
+        animal_id,
       },
       returning: true,
     });

@@ -1,6 +1,6 @@
 import Organization from "../models/organization.js";
 import { Op } from "sequelize";
-import { getPersons_OrganizationsByUserId } from "./person_organizationService.js";
+import { getPersons_OrganizationsByPersonId } from "./person_organizationService.js";
 export const createOrganization = async (organization) => {
   try {
     return await Organization.create(organization);
@@ -60,7 +60,7 @@ export const getPendingOrganizations = async () => {
 };
 
 export const getOrganizationsNotIn = async (personId) => {
-  const applys = await getPersons_OrganizationsByUserId(personId);
+  const applys = await getPersons_OrganizationsByPersonId(personId);
   const organizationsId = applys.map((apply) => apply.organization_id);
 
   try {
@@ -93,6 +93,18 @@ export const updateOrganization = async (organizationId, organization) => {
       return null;
     }
     return await organizationToUpdate.update(organization);
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteOrganizationById = async (organizationId) => {
+  try {
+    const organization = await Organization.findByPk(organizationId);
+    if (!organization) {
+      return null;
+    }
+    await organization.update({ isEliminated: true, isAccepted: false });
   } catch (error) {
     throw error;
   }

@@ -3,6 +3,7 @@ import { firebaseConfig } from "../config/config.js";
 import {
   getStorage,
   ref,
+  deleteObject,
   uploadBytesResumable,
   getDownloadURL,
 } from "firebase/storage";
@@ -10,7 +11,7 @@ import {
 initializeApp(firebaseConfig.firebase);
 const storage = getStorage();
 
-const uploadImgs = async (file) => {
+export const uploadImgs = async (file) => {
   try {
     const storageRef = ref(
       storage,
@@ -30,4 +31,14 @@ const uploadImgs = async (file) => {
     throw new Error(err);
   }
 };
-export default uploadImgs;
+
+export const deleteImage = async (url) => {
+  try {
+    const urlWithoutSpace = url.replace(/\s/g, "%20");
+    const storageRef = ref(storage, urlWithoutSpace);
+    console.log(storageRef);
+    await deleteObject(storageRef);
+  } catch (err) {
+    throw new Error(err);
+  }
+};

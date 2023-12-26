@@ -1,5 +1,5 @@
 import financialInfoScheme from "../../validationSchemes/financial_infoScheme.js";
-import { ERRORS } from "../../utils/constants.js";
+import { ERRORS } from "../../utils/errors.js";
 
 export default class creatFinancial_infoDTO {
   constructor(organization_id, cbu, alias, mp_link) {

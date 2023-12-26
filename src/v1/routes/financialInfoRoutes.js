@@ -4,6 +4,9 @@ import {
   registerFinancialInfo,
   updateFinancialInfo,
 } from "../../controllers/financialInfoController.js";
+import authMiddleware from "../../middlewares/auth.js";
+import checkRoles from "../../middlewares/checkRolesMiddleware.js";
+import { ROLES } from "../../utils/constants.js";
 const router = express.Router();
 
 /**
@@ -37,7 +40,12 @@ const router = express.Router();
  *         description: Error de validación
  */
 
-router.post("/", registerFinancialInfo);
+router.post(
+  "/",
+  authMiddleware,
+  checkRoles([ROLES.ADMIN]),
+  registerFinancialInfo
+);
 
 /**
  * @swagger
@@ -102,6 +110,11 @@ router.get("/:organization_id", getFinancialInfoByOrganization);
  *         description: Error de validación
  */
 
-router.put("/:id", updateFinancialInfo);
+router.put(
+  "/:id",
+  authMiddleware,
+  checkRoles([ROLES.ADMIN]),
+  updateFinancialInfo
+);
 
 export default router;

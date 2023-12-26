@@ -1,4 +1,4 @@
-import { ERRORS } from "../utils/constants.js";
+import { ERRORS } from "../utils/errors.js";
 
 const checkRoles = (requiredRoles) => {
   return (req, res, next) => {

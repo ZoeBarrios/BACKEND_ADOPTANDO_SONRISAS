@@ -1,8 +1,10 @@
 import express from "express";
 const router = express.Router();
 import {
+  deleteCase,
   getCase,
   getCases,
+  getCasesByOrganizationId,
   registerCase,
   updateOneCase,
 } from "../../controllers/casesController.js";
@@ -15,7 +17,7 @@ export const multipleUpload = multer().array("images", 3);
  * @swagger
  * /api/cases:
  *   post:
- *     summary: registrar un caso
+ *     summary: Registrar un caso
  *     tags: [Cases]
  *     description: registrar un caso en la base de datos
  *     requestBody:
@@ -47,6 +49,8 @@ export const multipleUpload = multer().array("images", 3);
  *         description: Error en la petición
  *       401:
  *         description: No autorizado
+ *       403:
+ *         description: No permitido
  */
 
 router.post(
@@ -130,9 +134,6 @@ router.get("/:id", getCase);
  *           schema:
  *             type: object
  *             properties:
- *               animal_id:
- *                 type: integer
- *                 description: id del animal
  *               description:
  *                 type: string
  *                 description: descripción del caso
@@ -144,13 +145,74 @@ router.get("/:id", getCase);
  *         description: Respuesta exitosa
  *       404:
  *         description: No encontrado
- *       security: []
+ *       400:
+ *         description: Error en la petición
+ *       401:
+ *         description: No autorizado
+ *       403:
+ *         description: No permitido
  */
 router.put(
   "/:id",
   authMiddleware,
   checkRolesMiddleware([ROLES.ADMIN, ROLES.MODERATOR]),
   updateOneCase
+);
+
+/**
+ * @swagger
+ * /api/cases/organization/{id}:
+ *   get:
+ *     summary: Obtener todos los casos de una organización
+ *     tags: [Cases]
+ *     description: Obtener todos los casos de una organización
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: id de la organización
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Respuesta exitosa
+ *     security: []
+ */
+
+router.get("/organization/:id", getCasesByOrganizationId);
+
+/**
+ * @swagger
+ * /api/cases/{id}:
+ *   delete:
+ *     summary: Eliminar un caso
+ *     tags: [Cases]
+ *     description: Eliminar un caso
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: id del caso
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Respuesta exitosa
+ *       404:
+ *         description: No encontrado
+ *       400:
+ *         description: Error en la petición
+ *       401:
+ *         description: No autorizado
+ *       403:
+ *         description: No permitido
+ */
+
+router.delete(
+  "/:id",
+  authMiddleware,
+  checkRolesMiddleware([ROLES.ADMIN, ROLES.MODERATOR]),
+  deleteCase
 );
 
 export default router;

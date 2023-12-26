@@ -1,3 +1,4 @@
+import organizationDTO from "../organizations/organizationDTO.js";
 export default class animalDTO {
   constructor(
     animal_id,
@@ -7,6 +8,8 @@ export default class animalDTO {
     size,
     birthdate,
     img_url,
+    eliminated,
+    organization_id,
     organization
   ) {
     this.animal_id = animal_id;
@@ -16,7 +19,8 @@ export default class animalDTO {
     this.size = size;
     this.birthdate = birthdate;
     this.img_url = img_url;
-    this.organization = organization;
+    this.organization_id = organization_id;
+    eliminated, (this.organization = organizationDTO.toResponse(organization));
   }
   static toResponse(animal) {
     const {
@@ -27,6 +31,8 @@ export default class animalDTO {
       size,
       birthdate,
       img_url,
+      eliminated,
+      organization_id,
       organization,
     } = animal;
     return new animalDTO(
@@ -37,6 +43,8 @@ export default class animalDTO {
       size,
       birthdate,
       img_url,
+      eliminated,
+      organization_id,
       organization
     );
   }

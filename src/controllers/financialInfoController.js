@@ -5,6 +5,8 @@ import {
   getFinancial_infoByOganization,
   updateFinancial_info,
 } from "../services/financial_infoService.js";
+import parseValidationError from "../utils/parseValidationError.js";
+import IdScheme from "../validationSchemes/idScheme.js";
 
 export const registerFinancialInfo = async (req, res, next) => {
   try {
@@ -29,6 +31,10 @@ export const getFinancialInfoByOrganization = async (req, res, next) => {
 export const updateFinancialInfo = async (req, res, next) => {
   try {
     const { id } = req.params;
+    const { error, value } = IdScheme.validate({ id });
+    if (error) {
+      parseValidationError(error);
+    }
     const updateDTO = updateFinancial_infoDTO.fromRequest(req);
     const financialInfo = await updateFinancial_info(id, updateDTO);
     return res.success(200, financialInfo);

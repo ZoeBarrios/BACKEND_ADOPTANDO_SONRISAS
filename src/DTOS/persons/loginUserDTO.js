@@ -1,8 +1,8 @@
 import loginSchema from "../../validationSchemes/loginScheme.js";
 import parseValidationError from "../../utils/parseValidationError.js";
 export default class loginUserDTO {
-  constructor(name, password) {
-    this.name = name;
+  constructor(nameOrEmail, password) {
+    this.nameOrEmail = nameOrEmail;
     this.password = password;
   }
 
@@ -11,8 +11,8 @@ export default class loginUserDTO {
     if (error) {
       parseValidationError(error);
     }
-    const { name, password } = req.body;
-    return new loginUserDTO(name, password);
+    const { nameOrEmail, password } = req.body;
+    return new loginUserDTO(nameOrEmail, password);
   }
 
   static toResponse(person) {

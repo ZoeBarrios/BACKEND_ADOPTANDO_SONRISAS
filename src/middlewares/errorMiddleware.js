@@ -1,4 +1,4 @@
-import { ERRORS } from "../utils/constants.js";
+import { ERRORS } from "../utils/errors.js";
 const errorMiddleware = (err, req, res, next) => {
   const errorConfig = ERRORS[err.name];
 
