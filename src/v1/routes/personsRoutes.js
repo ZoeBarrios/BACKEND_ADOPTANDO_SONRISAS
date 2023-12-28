@@ -187,6 +187,11 @@ router.post("/apply", joinPersonToOrganization);
  *           type: integer
  *         required: true
  *         description: id del usuario
+ *       - in: query
+ *         name: activity_id
+ *         schema:
+ *           type: integer
+ *         description: id de la actividad
  *     responses:
  *       200:
  *         description: Respuesta exitosa
@@ -243,6 +248,11 @@ router.delete("/apply", deletePersonFromOrganization);
  *           type: integer
  *         required: true
  *         description: id de la organización
+ *       - in: query
+ *         name: activity_id
+ *         schema:
+ *           type: integer
+ *         description: id de la actividad
  *     responses:
  *       200:
  *         description: Respuesta exitosa

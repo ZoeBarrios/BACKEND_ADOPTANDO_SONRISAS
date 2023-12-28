@@ -26,7 +26,7 @@ export const updateIsAcceptedOrganization = async (organizationId) => {
 export const deleteOrganization = async (organizationId) => {
   try {
     const organization = await Organization.findByPk(organizationId);
-    organization.isEliminated = true;
+    organization.isDeleted = true;
     return await organization.save();
   } catch (error) {
     throw error;
@@ -38,7 +38,7 @@ export const getActiveOrganizations = async () => {
     return await Organization.findAll({
       where: {
         isAccepted: true,
-        isEliminated: false,
+        isDeleted: false,
       },
     });
   } catch (error) {
@@ -51,7 +51,7 @@ export const getPendingOrganizations = async () => {
     return await Organization.findAll({
       where: {
         isAccepted: false,
-        isEliminated: false,
+        isDeleted: false,
       },
     });
   } catch (error) {
@@ -70,7 +70,7 @@ export const getOrganizationsNotIn = async (personId) => {
           [Op.notIn]: organizationsId,
         },
         isAccepted: true,
-        isEliminated: false,
+        isDeleted: false,
       },
     });
   } catch (error) {
@@ -104,7 +104,7 @@ export const deleteOrganizationById = async (organizationId) => {
     if (!organization) {
       return null;
     }
-    await organization.update({ isEliminated: true, isAccepted: false });
+    await organization.update({ isDeleted: true, isAccepted: false });
   } catch (error) {
     throw error;
   }

@@ -144,10 +144,11 @@ export const getApplysByPersonId = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { error, value } = IdScheme.validate({ id });
+    const { activity_id } = req.query || null;
     if (error) {
       parseValidationError(error);
     }
-    const apply = await getPersons_OrganizationsByPersonId(id);
+    const apply = await getPersons_OrganizationsByPersonId(id, activity_id);
     if (!apply) {
       return next(ERRORS.NotFound);
     }
@@ -165,10 +166,14 @@ export const getPersons_OrganizationsByOrganization = async (
   try {
     const { id } = req.params;
     const { error, value } = IdScheme.validate({ id });
+    const { activity_id } = req.query || null;
     if (error) {
       parseValidationError(error);
     }
-    const apply = await getPersons_OrganizationsByOrganizationId(id);
+    const apply = await getPersons_OrganizationsByOrganizationId(
+      id,
+      activity_id
+    );
     if (!apply) {
       return next(ERRORS.NotFound);
     }

@@ -4,7 +4,7 @@ import {
   registerFinancialInfo,
   updateFinancialInfo,
 } from "../../controllers/financialInfoController.js";
-import authMiddleware from "../../middlewares/auth.js";
+import authMiddleware from "../../middlewares/authMiddleware.js";
 import checkRoles from "../../middlewares/checkRolesMiddleware.js";
 import { ROLES } from "../../utils/constants.js";
 const router = express.Router();

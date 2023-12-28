@@ -85,10 +85,11 @@ export const getCasesByOrganizationId = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { error, value } = IdScheme.validate({ id });
+    const deleted = req.query.deleted || undefined;
     if (error) {
       parseValidationError(error);
     }
-    const cases = await getCasesByOrganization(id);
+    const cases = await getCasesByOrganization(id, deleted);
 
     return res.success(
       200,

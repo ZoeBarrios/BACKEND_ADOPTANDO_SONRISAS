@@ -127,10 +127,11 @@ export const getAnimalByOrganizationId = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { error, value } = IdScheme.validate({ id });
+    const { name, isDeleted } = req.query ?? {};
     if (error) {
       parseValidationError(error);
     }
-    const animal = await getAnimalsByOrganization(id);
+    const animal = await getAnimalsByOrganization(id, isDeleted, name);
     console.log(animal);
     return res.success(200, animalsDTO.toResponse(animal));
   } catch (error) {

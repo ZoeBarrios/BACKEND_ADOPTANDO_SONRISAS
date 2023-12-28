@@ -9,12 +9,26 @@ export const createAnimal = async (animal) => {
   return animalCreated;
 };
 
-export const getAnimalsByOrganization = async (organizationId) => {
+export const getAnimalsByOrganization = async (
+  organizationId,
+  isDeleted,
+  name
+) => {
+  let where = {
+    organization_id: organizationId,
+  };
+
+  if (name) {
+    where.name = {
+      [Op.like]: `%${name}%`,
+    };
+  }
+  if (isDeleted) {
+    where.isDeleted = isDeleted;
+  }
   try {
     const animals = await Animal.findAll({
-      where: {
-        organization_id: organizationId,
-      },
+      where: where,
       include: [
         {
           model: Organization,
@@ -37,7 +51,7 @@ export const getAnimals = async (page) => {
     const animals = await Animal.findAll({
       where: {
         adopted: false,
-        eliminated: false,
+        isDeleted: false,
       },
       offset,
       limit,
@@ -82,7 +96,7 @@ export const getFilteredAnimal = async (
 
   let where = {
     adopted: false,
-    eliminated: false,
+    isDeleted: false,
   };
 
   if (genre) {
@@ -156,7 +170,7 @@ export const deleteAnimal = async (id) => {
   try {
     const animal = await Animal.findByPk(id);
     if (!animal) throw new Error(`No existe el animal con id ${id}`);
-    await updateAnimal(id, { eliminated: true });
+    await updateAnimal(id, { isDeleted: true });
     await cancelAllAdoptionsByAnimal(id);
   } catch (error) {
     throw error;

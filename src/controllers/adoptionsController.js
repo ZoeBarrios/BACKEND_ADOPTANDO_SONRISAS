@@ -10,6 +10,10 @@ import {
 } from "../services/adoptionsService.js";
 import { setAnimalAdopted } from "../services/animalsService.js";
 import { ERRORS } from "../utils/errors.js";
+import { send } from "../services/emailService.js";
+import { createPDF } from "../services/pdfService.js";
+import { getOrganizationById } from "../services/organizationService.js";
+import { config } from "dotenv";
 
 export const registerAdoption = async (req, res, next) => {
   try {
@@ -26,6 +30,27 @@ export const registerAdoption = async (req, res, next) => {
     const adoptionToReturn = await getAdoption(
       adoption.animal_id,
       adoption.person_id
+    );
+
+    const organization = await getOrganizationById(
+      adoptionToReturn.animal.organization_id
+    );
+
+    const infoPDF = await createPDF({
+      ...adoptionToReturn,
+      organization: organization,
+    });
+
+    const email = process.env.EMAIL;
+
+    await send(
+      {
+        to: adoptionToReturn.person.email,
+        subject: "Información de la adopción",
+        text: "Tu petición de adopción ha sido registrada, pronto recibirás una respuesta de la organización.",
+      },
+      email,
+      infoPDF
     );
 
     res.success(201, adoptionDTO.toResponse(adoptionToReturn));
@@ -47,8 +72,12 @@ export const getOneAdoption = async (req, res, next) => {
 export const getAdoptionsByUserId = async (req, res, next) => {
   try {
     const { personId } = req.params;
-    console.log(personId);
-    const adoptions = await getAllAdoptionsByUserId(personId);
+    const { isCancelled, isAccepted } = req.query ?? {};
+    const adoptions = await getAllAdoptionsByUserId(
+      personId,
+      isAccepted,
+      isCancelled
+    );
     return res.success(
       200,
       adoptions.map((adoption) => adoptionsDTO.toResponse(adoption))
@@ -61,7 +90,12 @@ export const getAdoptionsByUserId = async (req, res, next) => {
 export const getAdoptionsByOrganizationId = async (req, res, next) => {
   try {
     const { organizationId } = req.params;
-    const adoptions = await getAllAdoptionByOrganizationId(organizationId);
+    const { isCancelled, isAccepted } = req.query ?? {};
+    const adoptions = await getAllAdoptionByOrganizationId(
+      organizationId,
+      isAccepted,
+      isCancelled
+    );
     return res.success(
       200,
       adoptions.map((adoption) => adoptionsDTO.toResponse(adoption))

@@ -72,19 +72,23 @@ export const updateCase = async (id, updateCaseDTO) => {
   }
 };
 
-export const getCasesByOrganization = async (organization_id) => {
-  try {
-    const cases = await Case.findAll({
-      include: [
-        {
-          model: Animal,
-          as: "animal",
-          where: {
-            organization_id,
-          },
+export const getCasesByOrganization = async (organization_id, deleted) => {
+  const queryOptions = {
+    include: [
+      {
+        model: Animal,
+        as: "animal",
+        where: {
+          organization_id,
         },
-      ],
-    });
+      },
+    ],
+  };
+  console.log(deleted);
+  if (deleted) queryOptions.where = { isDeleted: deleted };
+
+  try {
+    const cases = await Case.findAll(queryOptions);
     return cases;
   } catch (error) {
     throw error;

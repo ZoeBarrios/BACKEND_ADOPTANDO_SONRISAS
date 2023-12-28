@@ -61,6 +61,14 @@ router.post("/", checkRoles([ROLES.USER]), registerAdoption);
  *         required: true
  *         schema:
  *           type: integer
+ *       - in: query
+ *         name: isAccepted
+ *         schema:
+ *           type: boolean
+ *       - in: query
+ *         name: isCancelled
+ *         schema:
+ *           type: boolean
  *     responses:
  *       200:
  *         description: Respuesta exitosa
@@ -90,6 +98,14 @@ router.get(
  *         required: true
  *         schema:
  *           type: integer
+ *       - in: query
+ *         name: isAccepted
+ *         schema:
+ *           type: boolean
+ *       - in: query
+ *         name: isCancelled
+ *         schema:
+ *           type: boolean
  *     responses:
  *       200:
  *         description: Respuesta exitosa

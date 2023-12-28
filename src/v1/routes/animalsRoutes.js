@@ -7,7 +7,7 @@ import {
   update,
   getAnimalByOrganizationId,
 } from "../../controllers/animalsController.js";
-import authMiddleware from "../../middlewares/auth.js";
+import authMiddleware from "../../middlewares/authMiddleware.js";
 import checkRoles from "../../middlewares/checkRolesMiddleware.js";
 import multer from "multer";
 import { ROLES } from "../../utils/constants.js";
@@ -154,6 +154,18 @@ router.get("/animal/:id", getById);
  *           type: integer
  *         required: false
  *         description: id de la organización
+ *       - in: query
+ *         name: isDeleted
+ *         schema:
+ *           type: boolean
+ *         required: false
+ *         description: Determina si se quieren filtrar los animales eliminados o no
+ *       - in: query
+ *         name: name
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: Nombre del animal
  *     responses:
  *       200:
  *         description: Respuesta exitosa

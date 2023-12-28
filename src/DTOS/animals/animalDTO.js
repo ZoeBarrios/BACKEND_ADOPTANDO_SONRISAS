@@ -8,7 +8,7 @@ export default class animalDTO {
     size,
     birthdate,
     img_url,
-    eliminated,
+    isDeleted,
     organization_id,
     organization
   ) {
@@ -20,7 +20,7 @@ export default class animalDTO {
     this.birthdate = birthdate;
     this.img_url = img_url;
     this.organization_id = organization_id;
-    eliminated, (this.organization = organizationDTO.toResponse(organization));
+    isDeleted, (this.organization = organizationDTO.toResponse(organization));
   }
   static toResponse(animal) {
     const {
@@ -31,7 +31,7 @@ export default class animalDTO {
       size,
       birthdate,
       img_url,
-      eliminated,
+      isDeleted,
       organization_id,
       organization,
     } = animal;
@@ -43,7 +43,7 @@ export default class animalDTO {
       size,
       birthdate,
       img_url,
-      eliminated,
+      isDeleted,
       organization_id,
       organization
     );

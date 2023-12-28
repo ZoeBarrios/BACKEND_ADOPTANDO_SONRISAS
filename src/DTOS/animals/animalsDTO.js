@@ -7,7 +7,7 @@ export default class animalsDTO {
     birthdate,
     img_url,
     organization,
-    eliminated
+    isDeleted
   ) {
     this.animal_id = animal_id;
     this.name = name;
@@ -16,7 +16,7 @@ export default class animalsDTO {
     this.birthdate = birthdate;
     this.img_url = img_url;
     this.organization = organization;
-    this.eliminated = eliminated;
+    this.isDeleted = isDeleted;
   }
   static toResponse(animals) {
     let dtos = animals.map((animal) => {
@@ -28,7 +28,7 @@ export default class animalsDTO {
         birthdate,
         img_url,
         organization,
-        eliminated,
+        isDeleted,
       } = animal;
       return new animalsDTO(
         animal_id,
@@ -38,7 +38,7 @@ export default class animalsDTO {
         birthdate,
         img_url,
         organization,
-        eliminated
+        isDeleted
       );
     });
     return dtos;

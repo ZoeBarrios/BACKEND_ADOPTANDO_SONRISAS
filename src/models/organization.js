@@ -40,7 +40,7 @@ const Organization = sequelize.define(
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
-    isEliminated: {
+    isDeleted: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },

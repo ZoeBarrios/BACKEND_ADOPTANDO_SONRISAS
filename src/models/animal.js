@@ -56,7 +56,7 @@ const Animal = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    eliminated: {
+    isDeleted: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },

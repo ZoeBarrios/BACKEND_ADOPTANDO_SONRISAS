@@ -9,7 +9,7 @@ import {
   updateOneCase,
 } from "../../controllers/casesController.js";
 import multer from "multer";
-import authMiddleware from "../../middlewares/auth.js";
+import authMiddleware from "../../middlewares/authMiddleware.js";
 import checkRolesMiddleware from "../../middlewares/checkRolesMiddleware.js";
 import { ROLES } from "../../utils/constants.js";
 export const multipleUpload = multer().array("images", 3);
@@ -173,6 +173,12 @@ router.put(
  *         description: id de la organización
  *         schema:
  *           type: integer
+ *       - in: query
+ *         name: deleted
+ *         required: false
+ *         description: Determina si se quieren filtrar los casos eliminados o no
+ *         schema:
+ *           type: boolean
  *     responses:
  *       200:
  *         description: Respuesta exitosa

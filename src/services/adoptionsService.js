@@ -30,8 +30,20 @@ export const getAdoption = async (animal_id, person_id) => {
 
   return adoption;
 };
-export const getAllAdoptionByOrganizationId = async (organization_id) => {
+export const getAllAdoptionByOrganizationId = async (
+  organization_id,
+  isAccepted,
+  isCancelled
+) => {
+  let where = {};
+  if (isAccepted) {
+    where.isAccepted = isAccepted;
+  }
+  if (isCancelled) {
+    where.isCancelled = isCancelled;
+  }
   const adoptions = await Adoption.findAll({
+    where: where,
     include: [
       {
         model: Animal,
@@ -48,11 +60,20 @@ export const getAllAdoptionByOrganizationId = async (organization_id) => {
   return adoptions;
 };
 
-export const getAllAdoptionsByUserId = async (person_id) => {
+export const getAllAdoptionsByUserId = async (
+  person_id,
+  isAccepted,
+  isCancelled
+) => {
+  let where = { person_id: person_id };
+  if (isAccepted) {
+    where.isAccepted = isAccepted;
+  }
+  if (isCancelled) {
+    where.isCancelled = isCancelled;
+  }
   const adoption = await Adoption.findAll({
-    where: {
-      person_id: person_id,
-    },
+    where: where,
     include: [
       {
         model: Animal,

@@ -26,14 +26,24 @@ export const getPersonOrganization = async (personId, organizationId) => {
   }
 };
 
-export const getPersons_OrganizationsByPersonId = async (person_id) => {
+export const getPersons_OrganizationsByPersonId = async (
+  person_id,
+  activity
+) => {
+  let where = {
+    person_id: person_id,
+    isActive: true,
+  };
+  if (activity) {
+    where.activity_id = activity;
+  }
   try {
     return await Persons_Organizations.findAll({
-      where: { person_id: person_id, isActive: true },
+      where: where,
       include: [
         {
           model: Organization,
-          where: { isAccepted: true, isEliminated: false },
+          where: { isAccepted: true, isDeleted: false },
         },
       ],
     });
@@ -45,12 +55,21 @@ export const getPersons_OrganizationsByPersonId = async (person_id) => {
 //PARA OBTENER VOLUNTARIOS
 
 export const getPersons_OrganizationsByOrganizationId = async (
-  organizationId
+  organizationId,
+  activity_id
 ) => {
+  let where = {
+    organization_id: organizationId,
+  };
+
+  if (activity_id) {
+    where.activity_id = activity_id;
+  }
+
   try {
     const role = await Role.findOne({ where: { role_name: ROLES.USER } });
     return await Persons_Organizations.findAll({
-      where: { organization_id: organizationId },
+      where: where,
       include: [{ model: Person, where: { role_id: role.role_id } }],
     });
   } catch (error) {
