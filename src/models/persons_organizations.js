@@ -11,7 +11,7 @@ const Persons_Organizations = sequelize.define(
       primaryKey: true,
     },
     person_id: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
     },

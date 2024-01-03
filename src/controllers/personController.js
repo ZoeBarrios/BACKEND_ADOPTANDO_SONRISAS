@@ -3,6 +3,7 @@ import createPersonDTO from "../DTOS/persons/createPersonDTO.js";
 import personOrganizationDTO from "../DTOS/organizations/personOrganizationDTO.js";
 import {
   createUser,
+  deleteUser,
   getByEmail,
   getById,
   getByUsername,
@@ -182,6 +183,24 @@ export const getPersons_OrganizationsByOrganization = async (
       200,
       apply.map((a) => personOrganizationDTO.toResponse(a))
     );
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteUserAccount = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { error, value } = IdScheme.validate({ id });
+    if (error) {
+      parseValidationError(error);
+    }
+    const person = await getById(id);
+    if (!person) {
+      return next(ERRORS.UserNotFound);
+    }
+    await deleteUser(id);
+    return res.success(200, "Usuario eliminado correctamente");
   } catch (error) {
     next(error);
   }

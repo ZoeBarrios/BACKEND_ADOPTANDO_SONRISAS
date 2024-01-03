@@ -9,6 +9,13 @@ export const sequelize = new Sequelize(
     host: connectionConfig.host,
     dialect: "postgres",
     logging: false, //DESACTIVA LOS LOGS DE SQL
+    /*ssl: true,
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
+    },*/
   }
 );
 

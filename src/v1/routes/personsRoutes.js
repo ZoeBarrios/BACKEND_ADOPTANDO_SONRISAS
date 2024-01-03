@@ -1,6 +1,7 @@
 import express from "express";
 import {
   deletePersonFromOrganization,
+  deleteUserAccount,
   getApplysByPersonId,
   getPersons_OrganizationsByOrganization,
   getUser,
@@ -261,5 +262,29 @@ router.delete("/apply", deletePersonFromOrganization);
  */
 
 router.get("/organization/:id", getPersons_OrganizationsByOrganization);
+
+/**
+ * @swagger
+ * /api/persons/{id}:
+ *   delete:
+ *     summary: Elimina una cuenta de usuario
+ *     tags: [Persons]
+ *     description: Elimina una cuenta de usuario
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: id del usuario
+ *     responses:
+ *       200:
+ *         description: Respuesta exitosa
+ *       404:
+ *         description: Usuario no encontrado
+ *       401:
+ *         description: No autorizado
+ */
+router.delete("/:id", deleteUserAccount);
 
 export default router;

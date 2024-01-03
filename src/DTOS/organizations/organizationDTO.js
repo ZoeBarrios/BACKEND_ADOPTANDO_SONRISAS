@@ -6,7 +6,8 @@ export default class organizationDTO {
     phone,
     email,
     instagram_link,
-    facebook_link
+    facebook_link,
+    isAccepted
   ) {
     this.organization_id = organization_id;
     this.name = name;
@@ -15,6 +16,7 @@ export default class organizationDTO {
     this.email = email;
     this.instagram_link = instagram_link;
     this.facebook_link = facebook_link;
+    this.isAccepted = isAccepted;
   }
 
   static toResponse(organization) {
@@ -26,6 +28,7 @@ export default class organizationDTO {
       email,
       instagram_link,
       facebook_link,
+      isAccepted,
     } = organization;
     return new organizationDTO(
       organization_id,
@@ -34,7 +37,8 @@ export default class organizationDTO {
       phone,
       email,
       instagram_link,
-      facebook_link
+      facebook_link,
+      isAccepted
     );
   }
 }

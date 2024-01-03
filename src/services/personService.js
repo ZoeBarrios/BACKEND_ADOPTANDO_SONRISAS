@@ -144,3 +144,17 @@ export const newPassword = async (person, password) => {
     throw error;
   }
 };
+
+export const deleteUser = async (person_id) => {
+  try {
+    const userFound = await Person.findByPk(person_id);
+    if (!userFound) {
+      return null;
+    }
+    await userFound.update({ isActive: false });
+    return true;
+  } catch (error) {
+    console.error(error.message);
+    throw error;
+  }
+};
