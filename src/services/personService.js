@@ -138,6 +138,7 @@ export const updateUser = async (person, person_id) => {
 export const newPassword = async (person, password) => {
   try {
     await person.update({ password: await hash(password) });
+    await person.update({ token_password: " " });
     return true;
   } catch (error) {
     console.error(error.message);

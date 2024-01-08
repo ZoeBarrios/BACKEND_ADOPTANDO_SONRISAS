@@ -19,11 +19,8 @@ const Animal = sequelize.define(
       },
     },
     description: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: false,
-      validate: {
-        len: [1, 255],
-      },
     },
     sex: {
       type: DataTypes.CHAR(1),
