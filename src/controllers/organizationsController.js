@@ -1,6 +1,6 @@
 import organizationsDTO from "../DTOS/organizations/organizationsDTO.js";
 import organizationDTO from "../DTOS/organizations/organizationDTO.js";
-import Organization from "../models/Organization.js";
+import Organization from "../models/organization.js";
 import {
   deleteOrganizationById,
   getActiveOrganizations,
