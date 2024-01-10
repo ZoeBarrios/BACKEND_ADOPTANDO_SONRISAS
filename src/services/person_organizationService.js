@@ -1,4 +1,4 @@
-import Role from "../models/Role.js";
+import Role from "../models/role.js";
 import Organization from "../models/organization.js";
 import Person from "../models/person.js";
 import person from "../models/person.js";
