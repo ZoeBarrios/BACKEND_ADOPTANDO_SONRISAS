@@ -89,6 +89,7 @@ export const getFilteredAnimal = async (
   genre = null,
   age = null,
   size = null,
+  type = null,
   page = 1,
   limit = 12
 ) => {
@@ -101,6 +102,10 @@ export const getFilteredAnimal = async (
 
   if (genre) {
     where.sex = genre.toUpperCase();
+  }
+
+  if (type) {
+    where.type = type.toUpperCase();
   }
 
   if (age) {

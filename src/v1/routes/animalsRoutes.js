@@ -112,6 +112,11 @@ router.post(
  *         schema:
  *           type: string
  *         description: Tamaño del animal
+ *       - in: query
+ *         name: type
+ *         schema:
+ *           type: string
+ *         description: Tipo de animal
  *     responses:
  *       200:
  *         description: Respuesta exitosa

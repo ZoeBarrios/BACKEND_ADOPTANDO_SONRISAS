@@ -56,12 +56,19 @@ export const getById = async (req, res, next) => {
 };
 
 export const getFiltered = async (req, res, next) => {
-  const { genre, age, size } = req.query;
+  const { genre, age, size, type } = req.query;
   const page = req.query.page || 1;
   const limit = req.query.limit || 12;
 
   try {
-    const animals = await getFilteredAnimal(genre, age, size, page, limit);
+    const animals = await getFilteredAnimal(
+      genre,
+      age,
+      size,
+      type,
+      page,
+      limit
+    );
     return res.success(200, animalsDTO.toResponse(animals));
   } catch (error) {
     next(error);
