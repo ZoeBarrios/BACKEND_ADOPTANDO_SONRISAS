@@ -10,7 +10,8 @@ export default class animalDTO {
     img_url,
     isDeleted,
     organization_id,
-    organization
+    organization,
+    type
   ) {
     this.animal_id = animal_id;
     this.name = name;
@@ -21,6 +22,7 @@ export default class animalDTO {
     this.img_url = img_url;
     this.organization_id = organization_id;
     isDeleted, (this.organization = organizationDTO.toResponse(organization));
+    this.type = type;
   }
   static toResponse(animal) {
     const {
@@ -34,6 +36,7 @@ export default class animalDTO {
       isDeleted,
       organization_id,
       organization,
+      type,
     } = animal;
     return new animalDTO(
       animal_id,
@@ -45,7 +48,8 @@ export default class animalDTO {
       img_url,
       isDeleted,
       organization_id,
-      organization
+      organization,
+      type
     );
   }
 }

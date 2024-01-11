@@ -57,6 +57,13 @@ const Animal = sequelize.define(
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    type: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        isIn: [["DOG", "CAT"]],
+      },
+    },
   },
   { timestamps: false }
 );

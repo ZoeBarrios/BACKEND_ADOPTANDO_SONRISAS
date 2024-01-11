@@ -50,6 +50,10 @@ export const singleUploAD = multer().single("image");
  *               organization_id:
  *                 type: integer
  *                 description: id de la organización a la que pertenece el animal
+ *               type:
+ *                 type: string
+ *                 description: tipo de animal
+ *                 enum: [DOG, CAT]
  *     responses:
  *       201:
  *         description: Respuesta exitosa
