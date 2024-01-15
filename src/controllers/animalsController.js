@@ -16,10 +16,10 @@ import IdScheme from "../validationSchemes/idScheme.js";
 import parseValidationError from "../utils/parseValidationError.js";
 
 export const registerAnimal = async (req, res, next) => {
-  if (!req.file) return next(ERRORS.NoImageSend);
-  req.body.img = await uploadSingleImage(req.file);
-  const animal = createAnimalDTO.fromRequest(req);
   try {
+    if (!req.file) return next(ERRORS.NoImageSend);
+    req.body.img = await uploadSingleImage(req.file);
+    const animal = createAnimalDTO.fromRequest(req);
     await createAnimal(animal);
     return res.success(201, "Animal registrado");
   } catch (error) {
