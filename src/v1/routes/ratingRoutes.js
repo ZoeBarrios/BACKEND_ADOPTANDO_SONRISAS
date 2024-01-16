@@ -5,6 +5,7 @@ import {
 } from "../../controllers/ratingController.js";
 import checkRoles from "../../middlewares/checkRolesMiddleware.js";
 import { ROLES } from "../../utils/constants.js";
+import authMiddleware from "../../middlewares/authMiddleware.js";
 const router = express.Router();
 
 /**
@@ -69,6 +70,11 @@ router.post("/", checkRoles([ROLES.ADMIN, ROLES.MODERATOR]), registerRating);
  *         description: No autorizado
  */
 
-router.get("/:person_id", getRatingsByPerson);
+router.get(
+  "/:person_id",
+  authMiddleware,
+  checkRoles([ROLES.ADMIN, ROLES.MODERATOR, ROLES.SUPERADMIN]),
+  getRatingsByPerson
+);
 
 export default router;
