@@ -122,3 +122,16 @@ export const deletePersons_Organizations = async (person_organization) => {
     throw error;
   }
 };
+
+export const deletePersonsFromOrganizationsByOrganizationId = async (
+  organizationId
+) => {
+  try {
+    return await Persons_Organizations.update(
+      { isActive: false },
+      { where: { organization_id: organizationId } }
+    );
+  } catch (error) {
+    throw error;
+  }
+};

@@ -109,3 +109,16 @@ export const deleteByCaseId = async (id) => {
     throw error;
   }
 };
+
+export const deleteCaseByOrganizationId = async (organization_id) => {
+  try {
+    const cases = await getCasesByOrganization(organization_id);
+    if (!cases) return null;
+    cases.forEach(async (case_) => {
+      await deleteByCaseId(case_.id);
+    });
+    return cases;
+  } catch (error) {
+    throw error;
+  }
+};

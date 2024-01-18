@@ -200,3 +200,18 @@ export const updateAnimal = async (animal_id, animal) => {
     throw error;
   }
 };
+
+export const deleteAnimalsByOrganization = async (organizationId) => {
+  try {
+    await Animal.update(
+      { isDeleted: true },
+      {
+        where: {
+          organization_id: organizationId,
+        },
+      }
+    );
+  } catch (error) {
+    throw error;
+  }
+};

@@ -30,7 +30,7 @@ export const login = async (req, res, next) => {
       person = await getByUsername(nameOrEmail);
     }
 
-    if (!person) {
+    if (!person || person.isActive == false) {
       return next(ERRORS.NotFound);
     }
 

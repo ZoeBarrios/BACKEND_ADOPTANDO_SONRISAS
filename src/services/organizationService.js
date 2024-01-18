@@ -1,6 +1,12 @@
 import Organization from "../models/organization.js";
 import { Op } from "sequelize";
-import { getPersons_OrganizationsByPersonId } from "./person_organizationService.js";
+import { sequelize } from "../config/db.js";
+import {
+  getPersons_OrganizationsByPersonId,
+  deletePersonsFromOrganizationsByOrganizationId,
+} from "./person_organizationService.js";
+import { deleteAnimalsByOrganization } from "./animalsService.js";
+import { deleteCaseByOrganizationId } from "./casesService.js";
 export const createOrganization = async (organization) => {
   try {
     return await Organization.create(organization);
@@ -99,13 +105,27 @@ export const updateOrganization = async (organizationId, organization) => {
 };
 
 export const deleteOrganizationById = async (organizationId) => {
+  const t = await sequelize.transaction();
+
   try {
-    const organization = await Organization.findByPk(organizationId);
+    const organization = await Organization.findByPk(organizationId, {
+      transaction: t,
+    });
     if (!organization) {
       return null;
     }
-    await organization.update({ isDeleted: true, isAccepted: false });
+
+    await organization.update(
+      { isDeleted: true, isAccepted: false },
+      { transaction: t }
+    );
+    await deleteAnimalsByOrganization(organizationId, t);
+    await deleteCaseByOrganizationId(organizationId, t);
+    await deletePersonsFromOrganizationsByOrganizationId(organizationId, t);
+
+    await t.commit();
   } catch (error) {
+    await t.rollback();
     throw error;
   }
 };
