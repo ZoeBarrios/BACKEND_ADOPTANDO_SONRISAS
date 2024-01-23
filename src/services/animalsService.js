@@ -19,8 +19,9 @@ export const getAnimalsByOrganization = async (
   };
 
   if (name) {
+    const lowerCaseName = name.toLowerCase();
     where.name = {
-      [Op.like]: `%${name}%`,
+      [Op.iLike]: `%${lowerCaseName}%`,
     };
   }
   if (isDeleted) {
