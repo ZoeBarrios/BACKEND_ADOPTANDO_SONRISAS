@@ -15,8 +15,9 @@ export const registerRating = async (req, res, next) => {
     let avg =
       ratings.reduce((acc, curr) => acc + curr.rating, 0) / ratings.length;
     if (isNaN(avg)) avg = 0;
-    const email = import.meta.env.EMAIL;
+
     if (avg <= 2.5) {
+      const email = process.env.EMAIL;
       await deleteUser(ratingToCreate.person_id);
       const person = await getById(ratingToCreate.person_id);
       await send(
