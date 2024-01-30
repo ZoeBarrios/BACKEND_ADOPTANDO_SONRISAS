@@ -225,6 +225,13 @@ router.delete(
  *     summary: Actualizar animal
  *     tags: [Animals]
  *     description: actualizar animal en la base de datos
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: id del animal
  *     requestBody:
  *       required: true
  *       content:
