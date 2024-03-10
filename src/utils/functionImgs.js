@@ -36,7 +36,6 @@ export const deleteImage = async (url) => {
   try {
     const urlWithoutSpace = url.replace(/\s/g, "%20");
     const storageRef = ref(storage, urlWithoutSpace);
-    console.log(storageRef);
     await deleteObject(storageRef);
   } catch (err) {
     throw new Error(err);

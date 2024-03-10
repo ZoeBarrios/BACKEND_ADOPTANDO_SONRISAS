@@ -21,7 +21,6 @@ export const login = async (req, res, next) => {
   try {
     const { nameOrEmail, password } = loginUserDTO.fromRequest(req);
     const { isEmail } = checkEmailOrUser(nameOrEmail);
-    console.log(nameOrEmail);
     let person = null;
 
     if (isEmail) {
@@ -79,6 +78,6 @@ export const verifyTokenResetPassword = async (req, res, next) => {
     }
   } catch (error) {
     console.log(error);
-    next(error);
+    next(ERRORS.Unauthorized);
   }
 };

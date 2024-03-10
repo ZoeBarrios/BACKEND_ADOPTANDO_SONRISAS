@@ -123,7 +123,6 @@ export const update = async (req, res, next) => {
       parseValidationError(error);
     }
     const animalUpdated = await updateAnimal(id, obj);
-    console.log(animalUpdated);
     return res.success(200, "Animal actualizado");
   } catch (error) {
     next(error);
@@ -139,7 +138,6 @@ export const getAnimalByOrganizationId = async (req, res, next) => {
       parseValidationError(error);
     }
     const animal = await getAnimalsByOrganization(id, isDeleted, name);
-    console.log(animal);
     return res.success(200, animalsDTO.toResponse(animal));
   } catch (error) {
     next(error);

@@ -1,4 +1,4 @@
-import { DataTypes } from "sequelize";
+import { DATE, DataTypes } from "sequelize";
 import { sequelize } from "../config/db.js";
 import Person from "./person.js";
 import Organization from "./organization.js";

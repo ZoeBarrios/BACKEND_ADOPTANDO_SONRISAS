@@ -84,7 +84,6 @@ export const getCasesByOrganization = async (organization_id, deleted) => {
       },
     ],
   };
-  console.log(deleted);
   if (deleted) queryOptions.where = { isDeleted: deleted };
 
   try {

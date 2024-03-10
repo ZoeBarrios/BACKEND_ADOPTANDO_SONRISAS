@@ -90,6 +90,7 @@ export const joinPersonToOrganization = async (req, res, next) => {
       await updatePersons_Organizations(alreadyExists, {
         isActive: true,
         activity_id: req.body.activity_id,
+        joinedDate: new Date(),
       });
 
       return res.success(200, alreadyExists);
@@ -115,6 +116,7 @@ export const updateActivityFromApply = async (req, res, next) => {
     if (!personOrganization) {
       return next(ERRORS.NotFound);
     }
+    personOrganization.joinedDate = new Date();
     await updatePersons_Organizations(personOrganization, activity_id);
 
     return res.success(200, personOrganization);
@@ -178,7 +180,6 @@ export const getPersons_OrganizationsByOrganization = async (
     if (!apply) {
       return next(ERRORS.NotFound);
     }
-    console.log(apply);
     return res.success(
       200,
       apply.map((a) => personOrganizationDTO.toResponse(a))

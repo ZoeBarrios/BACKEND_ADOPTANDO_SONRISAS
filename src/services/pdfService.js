@@ -26,18 +26,38 @@ export const createPDF = async (adoption) => {
 
   doc.moveDown();
 
-  doc.text("Información de mascota", {
+  doc.text("Información de la mascota", {
     fontSize: 16,
     underline: true,
   });
 
   doc.text(`Animal: ${animal.name}`);
-  doc.text(`Sexo del animal: ${SEX_TRANSLATE[animal.sex]}`);
-  doc.text(`Tamaño del animal: ${SIZE_TRANSLATE[animal.size]}`);
+  doc.text(`Sexo: ${SEX_TRANSLATE[animal.sex]}`);
+  doc.text(`Tamaño: ${SIZE_TRANSLATE[animal.size]}`);
   doc.text(`Fecha de nacimiento: ${animal.birthdate}`);
-  doc.text(`Información de la organización: ${organization.name}`);
+
+  doc.moveDown(2);
+
+  doc.text("Información de la organización", {
+    align: "center",
+    underline: true,
+    fontSize: 18,
+  });
+
+  doc.text(`Nombre: ${organization.name}`);
   doc.text(`Contacto: ${organization.phone_number || organization.email}`);
-  doc.text(`Persona adoptante: ${person.name}`);
+
+  doc.moveDown(2);
+
+  doc.text("Información del adoptante", {
+    align: "center",
+    underline: true,
+    fontSize: 18,
+  });
+
+  doc.text(`Nombre: ${person.name}`);
+  doc.text(`Teléfono: ${person.phone_number || "N/A"}`);
+  doc.text(`Email: ${person.email || "N/A"}`);
 
   doc.end();
 

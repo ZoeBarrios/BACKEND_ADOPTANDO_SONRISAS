@@ -37,7 +37,7 @@ export const forgotPassword = async (req, res, next) => {
     const token = createToken({
       id: person.person_id,
     });
-    const url = `${appConfig.url}reset/${token}`;
+    const url = `${appConfig.url}/reset/${token}`;
     const mailOptions = {
       to: email,
       subject: "Recuperar contraseña",

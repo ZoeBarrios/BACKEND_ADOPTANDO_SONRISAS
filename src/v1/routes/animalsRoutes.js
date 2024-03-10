@@ -78,7 +78,7 @@ router.post(
  * @swagger
  * /api/animals:
  *   get:
- *     summary: Obtener todos los animales
+ *     summary: Obtener todos los animales disponibles para adopción
  *     tags:
  *       - Animals
  *     description: Obtener todos los animales de la base de datos
